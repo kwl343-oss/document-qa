@@ -1,0 +1,441 @@
+import streamlit as st
+from openai import OpenAI
+import json
+
+EXTRACT_SCHEMA = {
+    "company": None,
+    "stage": None,
+    "sector": None,
+    "raise_amount_usd": None,
+    "arr_usd": None,
+    "growth_rate_pct": None,
+    "runway_months": None,
+    "notes": None
+}
+
+st.set_page_config(page_title="VCaaS – Deal Dashboard", layout="wide")
+
+# ----------------------------
+# Helpers (mock model outputs)
+# ----------------------------
+def mock_scorecard(deal: dict) -> dict:
+    """
+    Replace this later with your real model inference.
+    For now, returns deterministic-ish results based on a few inputs.
+    """
+    base = 0.62
+    # tiny, simple adjustments so it feels real
+    if deal["stage"] in ["Seed", "Pre-Seed"]:
+        base -= 0.05
+    if deal["growth_rate_pct"] >= 15:
+        base += 0.08
+    if deal["runway_months"] < 9:
+        base -= 0.07
+    if deal["arr_usd"] >= 1_000_000:
+        base += 0.06
+
+    prob = max(0.05, min(0.95, base))
+    drivers_pos = [
+        "Strong growth rate (reported)",
+        "Clear raise amount and use of funds",
+        "Evidence of market pull / traction",
+    ]
+    drivers_neg = [
+        "Short runway raises execution risk",
+        "Missing retention / CAC details",
+        "Team background unclear in deck",
+    ]
+    flags = ["Retention not provided", "CAC not provided"] if deal["arr_usd"] > 0 else ["No revenue metric provided"]
+
+    return {
+        "prob_next_round": prob,
+        "confidence": 0.72,
+        "drivers_pos": drivers_pos,
+        "drivers_neg": drivers_neg,
+        "risk_flags": flags,
+    }
+
+def apply_conviction(prob: float, conviction: float) -> float:
+    """
+    conviction in [-1, 1]. Cap effect to +/- 8 pts.
+    """
+    return max(0.0, min(1.0, prob + 0.08 * conviction))
+
+def pdf_to_text(file) -> str:
+    import fitz  # PyMuPDF
+    data = file.read()
+    doc = fitz.open(stream=data, filetype="pdf")
+    parts = []
+    for page in doc:
+        parts.append(page.get_text("text"))
+    return "\n".join(parts)
+
+def txt_to_text(file) -> str:
+    return file.read().decode("utf-8", errors="ignore")
+
+def tabular_to_text(file) -> str:
+    import pandas as pd
+    name = (file.name or "").lower()
+
+    if name.endswith(".csv"):
+        df = pd.read_csv(file)
+    else:
+        # xlsx
+        df = pd.read_excel(file)
+
+    # keep it cheap + readable
+    head = df.head(50)
+    return head.to_csv(index=False)
+
+def pptx_to_text(file) -> str:
+    from pptx import Presentation
+    import io
+
+    data = file.read()
+    prs = Presentation(io.BytesIO(data))
+
+    parts = []
+    for i, slide in enumerate(prs.slides, start=1):
+        parts.append(f"\n--- SLIDE {i} ---")
+        for shape in slide.shapes:
+            if hasattr(shape, "text") and shape.text:
+                parts.append(shape.text)
+    return "\n".join(parts)
+
+def stage_apply_extracted(ex: dict):
+    """Stage extracted values to apply on next rerun (avoids Streamlit key mutation error)."""
+    st.session_state["_pending_apply"] = ex
+    st.rerun()
+
+# ----------------------------
+# App Header
+# ----------------------------
+st.title("💼 VCaaS – Pitch Deck → Scorecard → Copilot (Prototype)")
+st.caption("MVP demo UI: upload text, enter deal specs, get a scorecard + ask questions.")
+
+# ----------------------------
+# API Key
+# ----------------------------
+openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
+
+# fallback: allow manual entry if secrets aren't set
+if not openai_api_key:
+    openai_api_key = st.text_input("OpenAI API Key", type="password")
+
+if not openai_api_key:
+    st.info("Add your OpenAI API key to continue.", icon="🗝️")
+    st.stop()
+
+client = OpenAI(api_key=openai_api_key)
+
+# ----------------------------
+# Layout: 3 columns
+# Intake | Scorecard | Copilot
+# ----------------------------
+col_intake, col_score, col_chat = st.columns([1.1, 1.0, 1.2], gap="large")
+
+# ----------------------------
+# 1) INTAKE
+# ----------------------------
+    # Make sure this exists BEFORE widgets
+if "extracted" not in st.session_state:
+    st.session_state.extracted = {}
+
+with col_intake:
+    st.subheader("1) Deal Intake")
+    if "_pending_apply" in st.session_state:
+        ex = st.session_state.pop("_pending_apply") or {}
+        for k in ["company","stage","sector","raise_amount_usd","arr_usd","growth_rate_pct","runway_months","notes"]:
+            v = ex.get(k, None)
+            if v is not None:
+                st.session_state[k] = v
+
+    # ----------------------------
+    # A) DOCUMENTS FIRST (top)
+    # ----------------------------
+    st.markdown("### Documents")
+
+    deck_file = st.file_uploader("Pitch deck (PDF / PPTX)", type=["pdf", "pptx"])
+
+    extra_docs = st.file_uploader(
+        "Additional materials (optional) — PDFs / PPTX / TXT / MD (multi-upload)",
+        type=["pdf", "pptx", "txt", "md"],
+        accept_multiple_files=True,
+    )
+
+    financials_file = st.file_uploader(
+        "Financials (optional) — CSV / XLSX",
+        type=["csv", "xlsx"],
+    )
+
+    notes = st.text_area(
+        "Additional context (optional)",
+        height=140,
+        placeholder="Paste extra notes: founder email, meeting notes, traction metrics, objections, diligence notes, etc.",
+        key="notes",
+    )
+    st.caption(f"Notes length: {len(st.session_state.get('notes','').strip()):,} characters")
+
+    # Build combined docs text
+    docs_parts = []
+
+    if deck_file is not None:
+        try:
+            name = (deck_file.name or "").lower()
+            if name.endswith(".pdf"):
+                text = pdf_to_text(deck_file)
+            elif name.endswith(".pptx"):
+                text = pptx_to_text(deck_file)
+            else:
+                text = ""
+            docs_parts.append("===== PITCH DECK =====\n" + text)
+            st.success("Pitch deck uploaded.")
+        except Exception as e:
+            st.error(f"Could not read pitch deck file: {e}")
+
+    if extra_docs:
+        for f in extra_docs:
+            try:
+                name = (f.name or "").lower()
+                if name.endswith(".pdf"):
+                    text = pdf_to_text(f)
+                elif name.endswith(".pptx"):
+                    text = pptx_to_text(f)
+                else:
+                    text = txt_to_text(f)
+                docs_parts.append(f"===== EXTRA DOC: {f.name} =====\n{text}")
+            except Exception as e:
+                st.error(f"Could not read {f.name}: {e}")
+
+    if financials_file is not None:
+        try:
+            tabular_text = tabular_to_text(financials_file)
+            docs_parts.append(
+                f"===== FINANCIALS PREVIEW: {financials_file.name} (top rows) =====\n{tabular_text}"
+            )
+            st.success("Financials uploaded (preview extracted).")
+        except Exception as e:
+            st.error(f"Could not read financials file: {e}")
+
+    if st.session_state.get("notes", "").strip():
+        docs_parts.append("===== ADDITIONAL CONTEXT (TEXT) =====\n" + st.session_state["notes"].strip())
+
+    combined_docs_text = "\n\n".join(docs_parts)
+
+    with st.expander("Preview extracted text (debug)"):
+        st.write(f"Characters extracted: {len(combined_docs_text):,}")
+        st.text(combined_docs_text[:6000] if combined_docs_text else "No text extracted yet.")
+
+    # ----------------------------
+    # B) EXTRACTION BUTTONS
+    # ----------------------------
+    # ----------------------------
+# B) EXTRACTION BUTTONS
+# ----------------------------
+extract = st.button("Extract deal fields from documents", use_container_width=True)
+
+if extract:
+    if not combined_docs_text.strip():
+        st.warning("Upload a deck or add context first.")
+    else:
+        with st.spinner("Extracting deal fields..."):
+            system = "Extract deal fields from the provided documents. Output ONLY valid JSON."
+            user = f"""
+Return JSON with these keys:
+{list(EXTRACT_SCHEMA.keys())}
+
+Rules:
+- Use numbers for numeric fields (no $ or commas).
+- If unknown, use null.
+- stage should be one of: Pre-Seed, Seed, Series A, Series B+
+- Keep it conservative: don't guess.
+
+DOCUMENTS:
+{combined_docs_text[:12000]}
+"""
+            resp = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                response_format={"type": "json_object"},
+            )
+
+            raw = resp.choices[0].message.content.strip()
+            try:
+                extracted = json.loads(raw)
+                st.session_state.extracted = extracted
+                st.success("Extraction complete.")
+                st.json(extracted)
+            except Exception:
+                st.error("Extraction failed (non-JSON returned).")
+                st.code(raw)
+
+# ✅ ONE apply button, safe path only
+if st.session_state.get("extracted"):
+    if st.button("Apply extracted fields to form", use_container_width=True):
+        stage_apply_extracted(st.session_state.extracted)
+
+    # ----------------------------
+    # C) DEAL FIELDS SECOND (bottom)
+    # ----------------------------
+    st.divider()
+    st.markdown("### Deal fields (review / edit)")
+
+    company = st.text_input("Company name", value="Acme AI", key="company")
+    stage = st.selectbox("Stage", ["Pre-Seed", "Seed", "Series A", "Series B+"], key="stage")
+    sector = st.text_input("Sector", value="B2B SaaS", key="sector")
+    raise_amount = st.number_input("Raise amount ($)", min_value=0, step=250000, value=3000000, key="raise_amount_usd")
+    arr = st.number_input("ARR ($) (0 if unknown)", min_value=0, step=100000, value=800000, key="arr_usd")
+    growth = st.number_input("Growth rate % (monthly/annual—your choice for now)", min_value=0, max_value=500, step=1, value=18, key="growth_rate_pct")
+    runway = st.number_input("Runway (months)", min_value=0, max_value=60, step=1, value=10, key="runway_months")
+
+    run = st.button("Run VCaaS analysis", type="primary", use_container_width=True)
+    
+## ----------------------------
+# 2) SCORECARD
+# ----------------------------
+with col_score:
+    st.subheader("2) Scorecard")
+
+    if "last_result" not in st.session_state:
+        st.session_state.last_result = None
+        st.session_state.last_deal = None
+
+    if run:
+        deal = {
+            "company": company,
+            "stage": stage,
+            "sector": sector,
+            "raise_amount_usd": raise_amount,
+            "arr_usd": arr,
+            "growth_rate_pct": growth,
+            "runway_months": runway,
+
+            # docs
+            "docs_text": combined_docs_text,
+            "notes": notes,
+            "has_deck": deck_file is not None,
+            "extra_doc_count": len(extra_docs) if extra_docs else 0,
+            "has_financials": financials_file is not None,
+        }
+
+        st.session_state.last_deal = deal
+        st.session_state.last_result = mock_scorecard(deal)
+
+    if not st.session_state.last_result:
+        st.info("Fill intake on the left and click **Run VCaaS analysis**.")
+    else:
+        deal = st.session_state.last_deal
+        result = st.session_state.last_result
+
+        docs = deal.get("docs_text", "")
+        st.caption(f"Docs loaded: {len(docs):,} characters")
+        st.caption(f"Notes length (only): {len(deal.get('notes','').strip()):,} characters")
+        st.caption(
+            f"Uploaded deck: {'Yes' if deal.get('has_deck') else 'No'} • "
+            f"Extra docs: {deal.get('extra_doc_count', 0)} • "
+            f"Financials: {'Yes' if deal.get('has_financials') else 'No'}"
+        )
+
+        # Conviction slider (separate / capped adjustment)
+        conviction = st.slider(
+            "Conviction / Vibe adjustment",
+            min_value=-1.0, max_value=1.0, value=0.0, step=0.1
+        )
+        adjusted = apply_conviction(result["prob_next_round"], conviction)
+
+        st.metric("Next-round raise probability (model)", f"{result['prob_next_round']*100:.0f}%")
+        st.metric("Adjusted probability (with conviction)", f"{adjusted*100:.0f}%")
+        st.progress(adjusted)
+
+        st.caption(
+            f"Confidence: {result['confidence']*100:.0f}% • "
+            f"Stage: {deal['stage']} • Sector: {deal['sector']}"
+        )
+
+        st.markdown("**Top positive drivers**")
+        for d in result["drivers_pos"]:
+            st.write("✅", d)
+
+        st.markdown("**Top risk drivers**")
+        for d in result["drivers_neg"]:
+            st.write("⚠️", d)
+
+        st.markdown("**Missing info / flags**")
+        for f in result["risk_flags"]:
+            st.write("🟥", f)
+
+# ----------------------------
+# 3) COPILOT (Document QA style)
+# ----------------------------
+with col_chat:
+    st.subheader("3) VCaaS Copilot")
+
+    if "chat" not in st.session_state:
+        st.session_state.chat = []
+
+    # show history
+    for msg in st.session_state.chat:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    prompt = st.chat_input("Ask about the deck, the deal, or the scorecard…")
+
+    if prompt:
+        if not st.session_state.last_deal or not st.session_state.last_result:
+            st.warning("Run the analysis first so I have deal context + a scorecard.")
+        else:
+            deal = st.session_state.last_deal
+            result = st.session_state.last_result
+
+            # Add user message
+            st.session_state.chat.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
+
+            # Ground the assistant on (a) deck text (b) structured fields (c) model outputs
+            system = (
+                "You are a VC/PE diligence copilot. "
+                "Use ONLY the provided deal fields, pitch deck text, and model outputs. "
+                "If something isn't provided, say it's missing and suggest what to ask for."
+            )
+            context = f"""
+DEAL FIELDS (user-entered):
+- Company: {deal['company']}
+- Stage: {deal['stage']}
+- Sector: {deal['sector']}
+- Raise amount: ${deal['raise_amount_usd']:,}
+- ARR: ${deal['arr_usd']:,}
+- Growth rate %: {deal['growth_rate_pct']}
+- Runway months: {deal['runway_months']}
+
+MODEL OUTPUTS:
+- Prob next round (model): {result['prob_next_round']:.2f}
+- Confidence: {result['confidence']:.2f}
+- Drivers +: {result['drivers_pos']}
+- Drivers -: {result['drivers_neg']}
+- Flags: {result['risk_flags']}
+
+DOCUMENTS (deck + extras + financials preview + notes):
+{deal.get('docs_text','')[:12000]}
+"""
+
+            messages = [
+                {"role": "system", "content": system},
+                {"role": "user", "content": context},
+                {"role": "user", "content": prompt},
+            ]
+
+            with st.chat_message("assistant"):
+                stream = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=messages,
+                    stream=True,
+                )
+                response = st.write_stream(stream)
+
+            st.session_state.chat.append({"role": "assistant", "content": response})
+
+

@@ -1,2 +1,8 @@
 streamlit
 openai
+pymupdf
+pymupdf
+pandas
+openpyxl
+PyMuPDF==1.24.10
+python-pptx
