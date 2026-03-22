@@ -31,335 +31,230 @@ EXTRACT_SCHEMA = {
 st.markdown("""
     <style>
     * {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+        box-sizing: border-box;
     }
-    
+
     :root {
-        --primary: #0071e3;
-        --success: #34c759;
-        --warning: #ff9500;
-        --danger: #ff3b30;
-        --dark: #000000;
-        --light: #f5f5f7;
-        --gray: #86868b;
-        --border: #e5e5ea;
+        --primary: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #0b0f1a;
+        --card: #131929;
+        --card-border: #1e2a40;
+        --text: #e2e8f0;
+        --muted: #475569;
+        --subtle: #64748b;
     }
     
-    /* Main title */
-    .main-title {
-        font-size: 2.5em;
-        font-weight: 700;
-        color: #000000;
-        letter-spacing: -0.03em;
-        margin-bottom: 0.25rem;
-    }
-    
-    .subtitle {
-        font-size: 1em;
-        color: #86868b;
-        font-weight: 400;
-    }
-    
-    /* Deal header */
-    .deal-header {
-        background: #ffffff;
-        border: 1px solid #e5e5ea;
-        border-radius: 18px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    
-    .deal-header-row {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .deal-header-item {
-        border-right: 1px solid #e5e5ea;
-        padding-right: 2rem;
-    }
-    
-    .deal-header-item:last-child {
-        border-right: none;
-        padding-right: 0;
-    }
-    
-    .deal-header-label {
-        font-size: 0.8125em;
-        color: #86868b;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.015em;
-        margin-bottom: 0.5rem;
-    }
-    
-    .deal-header-value {
-        font-size: 1.3125em;
-        font-weight: 600;
-        color: #000000;
-        letter-spacing: -0.01em;
-    }
-    
-    /* Progress indicator */
-    .progress-row {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-    
-    .progress-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 0.9375em;
-        color: #000000;
-    }
-    
-    .progress-check {
-        font-size: 1.25em;
-        color: #34c759;
-    }
-    
-    .progress-pending {
-        font-size: 1.25em;
-        color: #e5e5ea;
-    }
-    
-    /* Form section */
-    .form-section {
-        background: #ffffff;
-        border-radius: 18px;
-        padding: 2rem;
-        border: 1px solid #e5e5ea;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        margin-bottom: 2rem;
-    }
-    
-    .form-section-title {
-        font-size: 1.125em;
-        font-weight: 600;
-        color: #000000;
-        margin-bottom: 1.5rem;
-        letter-spacing: -0.01em;
-    }
-    
-    .form-label {
-        font-size: 0.9375em;
-        font-weight: 500;
-        color: #000000;
-        margin-bottom: 0.5rem;
-    }
-    
-    .form-hint {
-        font-size: 0.8125em;
-        color: #86868b;
-        margin-bottom: 1.25rem;
-    }
-    
-    /* Input styling */
+    /* ===== DARK BASE ===== */
+    .stApp { background: #0b0f1a !important; color: #e2e8f0 !important; }
+    .main .block-container { padding-top: 1.5rem !important; max-width: 100% !important; }
+
+    /* ===== SIDEBAR ===== */
+    [data-testid="stSidebar"] { background: #0d1424 !important; border-right: 1px solid #1e2a40 !important; }
+    [data-testid="stSidebar"] * { color: #e2e8f0 !important; }
+    [data-testid="stSidebar"] hr { border-color: #1e2a40 !important; }
+    [data-testid="stSidebarNav"] { display: none; }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1, h2, h3, h4, h5, h6 { color: #f1f5f9 !important; font-weight: 600 !important; letter-spacing: -0.02em; }
+    p, .stMarkdown p, .stMarkdown li { color: #cbd5e1 !important; }
+    label { color: #94a3b8 !important; font-size: 0.85em !important; }
+    .stCaption p { color: #64748b !important; }
+
+    /* ===== INPUTS ===== */
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
-    .stSelectbox > div > div > select,
     .stTextArea > div > div > textarea {
-        font-size: 1em !important;
-        padding: 0.75rem !important;
-        border-radius: 8px !important;
-        border: 1px solid #e5e5ea !important;
-        background-color: #ffffff !important;
+        background: #1a2035 !important; color: #e2e8f0 !important;
+        border: 1px solid #2a3550 !important; border-radius: 10px !important;
+        font-size: 0.92em !important; padding: 0.6rem 0.85rem !important;
     }
-    
     .stTextInput > div > div > input:focus,
     .stNumberInput > div > div > input:focus,
-    .stSelectbox > div > div > select:focus,
     .stTextArea > div > div > textarea:focus {
-        border-color: #0071e3 !important;
-        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1) !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
     }
-    
-    /* Button styling */
+    .stSelectbox > div > div,
+    .stMultiSelect > div > div {
+        background: #1a2035 !important; color: #e2e8f0 !important;
+        border: 1px solid #2a3550 !important; border-radius: 10px !important;
+    }
+    [data-baseweb="select"] * { color: #e2e8f0 !important; background: #1a2035 !important; }
+    [data-baseweb="menu"] { background: #1a2035 !important; border: 1px solid #2a3550 !important; }
+
+    /* ===== BUTTONS ===== */
     .stButton > button {
-        border-radius: 8px !important;
-        font-weight: 500 !important;
-        font-size: 0.95em !important;
-        padding: 0.75rem 1.5rem !important;
-        letter-spacing: -0.01em;
+        background: #1a2035 !important; color: #cbd5e1 !important;
+        border: 1px solid #2a3550 !important; border-radius: 10px !important;
+        font-weight: 500 !important; font-size: 0.88em !important;
+        padding: 0.55rem 1.1rem !important; transition: all 0.15s ease !important;
     }
-    
+    .stButton > button:hover {
+        background: #243050 !important; border-color: #3b82f6 !important;
+        color: #93c5fd !important;
+    }
     .stButton > button[kind="primary"] {
-        background-color: #0071e3 !important;
-        color: white !important;
-        border: none !important;
+        background: #2563eb !important; color: white !important;
+        border: none !important; box-shadow: 0 0 20px rgba(37,99,235,0.3) !important;
     }
-    
-    .stButton > button[kind="primary"]:hover {
-        background-color: #0066cc !important;
+    .stButton > button[kind="primary"]:hover { background: #1d4ed8 !important; }
+
+    /* ===== METRICS ===== */
+    [data-testid="metric-container"] {
+        background: #131929 !important; border: 1px solid #1e2a40 !important;
+        border-radius: 14px !important; padding: 1.1rem 1.25rem !important;
     }
-    
-    .stButton > button[kind="secondary"] {
-        background-color: #f5f5f7 !important;
-        color: #0071e3 !important;
-        border: 1px solid #e5e5ea !important;
-    }
-    
-    .stButton > button[kind="secondary"]:hover {
-        background-color: #e5e5ea !important;
-    }
-    
-    /* Cards */
-    .metric-card {
-        background: #f5f5f7;
-        border-radius: 12px;
-        padding: 1.25rem;
-        border: none;
-    }
-    
-    .recommendation-card {
-        background: #ffffff;
-        border: 2px solid #0071e3;
-        border-radius: 18px;
-        padding: 2rem;
-        text-align: center;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    
-    .recommendation-badge-invest {
-        display: inline-block;
-        background: #34c759;
-        color: white;
-        padding: 0.875rem 1.75rem;
-        border-radius: 12px;
-        font-size: 1.3125em;
-        font-weight: 600;
-        margin: 0.5rem;
-    }
-    
-    .recommendation-badge-watchlist {
-        display: inline-block;
-        background: #ff9500;
-        color: white;
-        padding: 0.875rem 1.75rem;
-        border-radius: 12px;
-        font-size: 1.3125em;
-        font-weight: 600;
-        margin: 0.5rem;
-    }
-    
-    .recommendation-badge-pass {
-        display: inline-block;
-        background: #ff3b30;
-        color: white;
-        padding: 0.875rem 1.75rem;
-        border-radius: 12px;
-        font-size: 1.3125em;
-        font-weight: 600;
-        margin: 0.5rem;
-    }
-    
-    /* Driver cards */
-    .driver-positive {
-        background: #d1f4e0;
-        border-left: 3px solid #34c759;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-    }
-    
-    .driver-negative {
-        background: #fff8e1;
-        border-left: 3px solid #ff9500;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-    }
-    
-    .driver-flag {
-        background: #ffe0e0;
-        border-left: 3px solid #ff3b30;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 0.5rem 0;
-    }
-    
+    [data-testid="metric-container"] label { color: #475569 !important; font-size: 0.72em !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; }
+    [data-testid="stMetricValue"] { color: #f1f5f9 !important; font-weight: 700 !important; }
+    [data-testid="stMetricDelta"] { color: #64748b !important; }
+
+    /* ===== PROGRESS ===== */
+    .stProgress > div > div > div { background: #1e2a40 !important; border-radius: 999px !important; height: 5px !important; }
+    .stProgress > div > div > div > div { background: linear-gradient(90deg, #3b82f6, #10b981) !important; border-radius: 999px !important; }
+
+    /* ===== DIVIDER ===== */
+    hr, [data-testid="stDivider"] { border-color: #1e2a40 !important; margin: 1.5rem 0 !important; }
+
+    /* ===== EXPANDER ===== */
+    [data-testid="stExpander"] { background: #131929 !important; border: 1px solid #1e2a40 !important; border-radius: 12px !important; }
+    [data-testid="stExpander"] summary { color: #e2e8f0 !important; }
+
+    /* ===== INFO/ALERTS ===== */
+    [data-testid="stInfo"] { background: rgba(59,130,246,0.08) !important; border: 1px solid rgba(59,130,246,0.25) !important; border-radius: 12px !important; color: #93c5fd !important; }
+    [data-testid="stWarning"] { background: rgba(245,158,11,0.08) !important; border: 1px solid rgba(245,158,11,0.2) !important; border-radius: 12px !important; }
+    [data-testid="stSuccess"] { background: rgba(16,185,129,0.08) !important; border: 1px solid rgba(16,185,129,0.2) !important; border-radius: 12px !important; }
+
+    /* ===== FILE UPLOADER ===== */
+    [data-testid="stFileUploader"] { background: #131929 !important; border: 2px dashed #2a3550 !important; border-radius: 12px !important; }
+    [data-testid="stFileUploader"] * { color: #64748b !important; }
+
+    /* ===== CHAT ===== */
+    [data-testid="stChatInput"] > div { background: #1a2035 !important; border: 1px solid #2a3550 !important; border-radius: 12px !important; }
+    [data-testid="stChatMessage"] { background: #131929 !important; border: 1px solid #1e2a40 !important; border-radius: 12px !important; }
+
+    /* ===== FORM SUBMIT ===== */
+    [data-testid="stFormSubmitButton"] > button { background: #2563eb !important; color: white !important; border: none !important; border-radius: 10px !important; font-weight: 600 !important; }
+
+    /* ===== CUSTOM COMPONENTS ===== */
+
+    /* Breadcrumb */
+    .vc-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82em; color: #475569; margin-bottom: 0.5rem; }
+    .vc-breadcrumb .sep { color: #2a3550; }
+    .vc-breadcrumb .crumb { color: #475569; cursor: pointer; }
+    .vc-breadcrumb .crumb:hover { color: #94a3b8; }
+    .vc-breadcrumb .current { color: #e2e8f0; font-weight: 600; }
+
+    /* Decision badges */
+    .badge-watch { display: inline-flex; align-items: center; gap: 6px; background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
+    .badge-proceed { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
+    .badge-pass { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
+
+    /* Deal pills */
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.1rem; }
+    .pill { display: flex; flex-direction: column; background: #131929; border: 1px solid #1e2a40; border-radius: 10px; padding: 7px 13px; min-width: 90px; }
+    .pill-lbl { font-size: 0.6em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 3px; }
+    .pill-val { font-size: 0.88em; font-weight: 600; color: #e2e8f0; }
+    .pv-green { color: #34d399; } .pv-orange { color: #fbbf24; } .pv-red { color: #f87171; } .pv-blue { color: #60a5fa; } .pv-purple { color: #a78bfa; }
+
+    /* Dark card */
+    .vc-card { background: #131929; border: 1px solid #1e2a40; border-radius: 16px; padding: 1.4rem; margin-bottom: 1rem; }
+    .vc-card-title { font-size: 0.68em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 1rem; }
+
+    /* Personalization notice */
+    .pers-notice { background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2); border-radius: 11px; padding: 11px 15px; margin-bottom: 1.1rem; display: flex; align-items: flex-start; gap: 10px; font-size: 0.845em; color: #93c5fd; line-height: 1.5; }
+    .pers-notice strong { color: #e2e8f0; }
+
+    /* Big score display */
+    .big-score { display: flex; align-items: baseline; gap: 3px; margin-bottom: 4px; line-height: 1; }
+    .bs-num { font-size: 2.6em; font-weight: 800; letter-spacing: -0.04em; }
+    .bs-pct { font-size: 1.8em; font-weight: 800; letter-spacing: -0.04em; }
+    .bs-denom { font-size: 1em; color: #3a4a65; font-weight: 500; }
+    .bs-sub { font-size: 0.78em; color: #475569; margin-bottom: 1rem; }
+
+    /* Thin progress bar */
+    .bar-track { background: #1e2a40; height: 4px; border-radius: 999px; overflow: hidden; flex: 1; }
+    .bar-fill { height: 100%; border-radius: 999px; }
+    .score-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .sbl { font-size: 0.82em; color: #64748b; min-width: 78px; flex-shrink: 0; }
+    .sbv { font-size: 0.82em; font-weight: 700; min-width: 26px; text-align: right; flex-shrink: 0; }
+
+    /* Signal items */
+    .signal { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 9px; margin-bottom: 7px; }
+    .sig-pos { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.14); }
+    .sig-neg { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.14); }
+    .sig-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.68em; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .si-up { background: rgba(16,185,129,0.18); color: #34d399; }
+    .si-dn { background: rgba(239,68,68,0.18); color: #f87171; }
+    .sig-body { flex: 1; }
+    .sig-title { font-size: 0.875em; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
+    .sig-desc { font-size: 0.775em; color: #475569; line-height: 1.4; }
+    .sig-delta { font-size: 0.78em; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+    .sd-pos { color: #34d399; } .sd-neg { color: #f87171; }
+
+    /* Deal info panel */
+    .di-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #141c2e; }
+    .di-row:last-child { border-bottom: none; }
+    .di-lbl { font-size: 0.82em; color: #3a4a65; }
+    .di-val { font-size: 0.875em; font-weight: 600; color: #e2e8f0; text-align: right; max-width: 60%; }
+
+    /* Benchmark */
+    .bench-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #141c2e; font-size: 0.82em; }
+    .bench-row:last-child { border-bottom: none; }
+    .bl { color: #475569; } .bv { font-weight: 700; color: #e2e8f0; } .ba { color: #334155; font-size: 0.9em; }
+
+    /* Urgency banner */
+    .urgency { display: flex; align-items: center; gap: 9px; border-radius: 10px; padding: 10px 14px; margin-bottom: 0.9rem; font-size: 0.84em; font-weight: 500; }
+
+    /* Section labels */
+    .sec-lbl { font-size: 0.68em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 0.75rem; margin-top: 0.5rem; }
+
+    /* Pipeline sidebar */
+    .pl-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 1rem; }
+    .pl-metric { background: #131929; border: 1px solid #1e2a40; border-radius: 10px; padding: 10px; text-align: center; }
+    .pl-num { font-size: 1.5em; font-weight: 800; color: #e2e8f0; line-height: 1; }
+    .pl-lbl { font-size: 0.65em; color: #3a4a65; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.07em; }
+
+    /* Nav tab row */
+    .tab-row { display: flex; border-bottom: 1px solid #1e2a40; margin-bottom: 1.5rem; gap: 2px; }
+
+    /* Main title */
+    .main-title { font-size: 1.5em; font-weight: 700; color: #f1f5f9; letter-spacing: -0.025em; }
+    .subtitle { font-size: 0.85em; color: #475569; font-weight: 400; }
+
+    /* Form sections */
+    .form-section { background: #131929; border-radius: 14px; padding: 1.5rem; border: 1px solid #1e2a40; margin-bottom: 1.5rem; }
+    .form-section-title { font-size: 1em; font-weight: 600; color: #e2e8f0; margin-bottom: 1.25rem; }
+    .form-label { font-size: 0.9em; font-weight: 500; color: #94a3b8; margin-bottom: 0.4rem; }
+    .form-hint { font-size: 0.8em; color: #475569; }
+
     /* Extraction preview */
-    .extraction-preview {
-        background: #f5f5f7;
-        border: 1px solid #e5e5ea;
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1.5rem;
-        font-family: 'Monaco', 'Courier New', monospace;
-        font-size: 0.85em;
-        max-height: 300px;
-        overflow-y: auto;
-    }
-    
-    /* Expander */
-    .streamlit-expander {
-        border: 1px solid #e5e5ea !important;
-        border-radius: 12px !important;
-        background: #ffffff !important;
-    }
-    
-    /* Divider */
-    .stDivider {
-        margin: 2rem 0 !important;
-    }
-    
-    /* Status badge */
-    .status-ready {
-        display: inline-block;
-        background: #d1f4e0;
-        color: #057857;
-        padding: 0.375rem 0.875rem;
-        border-radius: 8px;
-        font-size: 0.75em;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-    }
-    
-    .status-pending {
-        display: inline-block;
-        background: #fff8e1;
-        color: #b57200;
-        padding: 0.375rem 0.875rem;
-        border-radius: 8px;
-        font-size: 0.75em;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-    }
-    
-    /* Toast/info */
-    .info-box {
-        background: #dbeafe;
-        border: 1px solid #0071e3;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        color: #0066cc;
-        font-size: 0.95em;
-    }
-    
-    .warning-box {
-        background: #fff8e1;
-        border: 1px solid #ff9500;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-        color: #b57200;
-        font-size: 0.95em;
-    }
-    
-    /* Column layout fix */
-    .stColumn > div > div {
-        width: 100%;
-    }
-    
+    .extraction-preview { background: #0d1424; border: 1px solid #1e2a40; border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem; font-family: 'Monaco', 'Courier New', monospace; font-size: 0.82em; max-height: 280px; overflow-y: auto; color: #64748b; }
+
+    /* Status badges */
+    .status-ready { display: inline-block; background: rgba(16,185,129,0.12); color: #34d399; padding: 3px 10px; border-radius: 6px; font-size: 0.72em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid rgba(16,185,129,0.2); }
+    .status-pending { display: inline-block; background: rgba(245,158,11,0.12); color: #fbbf24; padding: 3px 10px; border-radius: 6px; font-size: 0.72em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid rgba(245,158,11,0.2); }
+
+    /* Info/warning boxes */
+    .info-box { background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2); border-radius: 11px; padding: 1rem; margin-bottom: 1.25rem; color: #93c5fd; font-size: 0.9em; }
+    .warning-box { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.2); border-radius: 11px; padding: 1rem; margin-bottom: 1.25rem; color: #fbbf24; font-size: 0.9em; }
+
+    /* Driver cards (legacy) */
+    .driver-positive { background: rgba(16,185,129,0.07); border-left: 3px solid #10b981; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
+    .driver-negative { background: rgba(245,158,11,0.07); border-left: 3px solid #f59e0b; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
+    .driver-flag { background: rgba(239,68,68,0.07); border-left: 3px solid #ef4444; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
+
+    /* Column fix */
+    .stColumn > div > div { width: 100%; }
+
+    /* Scrollbar dark */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0f1a; }
+    ::-webkit-scrollbar-thumb { background: #2a3550; border-radius: 3px; }
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -1320,23 +1215,55 @@ def get_progress_status():
 # ========================================
 # MAIN PAGE HEADER
 # ========================================
-col_title, col_reset = st.columns([1, 0.2])
+col_title, col_actions = st.columns([1, 0.35])
 with col_title:
-    st.markdown('<div class="main-title">VCaaS</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">Deal Intake & Analysis Platform</div>', unsafe_allow_html=True)
+    # Breadcrumb
+    _company_bc = st.session_state.get("company") or "New Deal"
+    _list_bc = st.session_state.get("active_list", "active").capitalize()
+    # Show analysis badge if result exists
+    _badge_html = ""
+    if st.session_state.get("last_result"):
+        _r = st.session_state.last_result
+        _p = _r.get("prob_next_round", 0)
+        _dec_raw, _ = get_investment_decision(_p)
+        _badge_cls = {"Proceed": "badge-proceed", "Watch": "badge-watch", "Pass": "badge-pass"}.get(_dec_raw, "badge-watch")
+        _badge_html = f'<span class="{_badge_cls}" style="margin-left:12px;">● {_dec_raw.upper()} · {_p:.0%}</span>'
+    st.markdown(f"""
+    <div class="vc-breadcrumb">
+        <span class="crumb">Deals</span>
+        <span class="sep">/</span>
+        <span class="crumb">{_list_bc}</span>
+        <span class="sep">/</span>
+        <span class="current">{_company_bc}</span>
+        {_badge_html}
+    </div>
+    """, unsafe_allow_html=True)
 
-with col_reset:
-    if st.button("🔄 Reset Deal", use_container_width=True, help="Clear all fields"):
-        reset_deal()
-        st.rerun()
+with col_actions:
+    col_exp, col_reset = st.columns(2)
+    with col_exp:
+        if st.button("↓ Export", use_container_width=True, help="Export deal data"):
+            st.toast("Export coming soon!")
+    with col_reset:
+        if st.button("+ New Deal", use_container_width=True, type="primary", help="Clear all fields and start fresh"):
+            reset_deal()
+            st.rerun()
 
 # ========================================
 # SIDEBAR: AUTHENTICATION & INVESTOR PROFILE
 # ========================================
 with st.sidebar:
+    # Brand header
+    st.markdown("""
+    <div style="padding:0.5rem 0 1.25rem;">
+        <div style="font-size:1.1em;font-weight:800;color:#f1f5f9;letter-spacing:-0.02em;">VCaaS</div>
+        <div style="font-size:0.72em;color:#3a4a65;margin-top:2px;">Deal Intake & Analysis</div>
+    </div>
+    """, unsafe_allow_html=True)
+
     # Authentication section
     if not st.session_state.logged_in:
-        st.markdown("### 🔐 Login / Signup")
+        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Sign In</div>', unsafe_allow_html=True)
         
         auth_tab = st.radio("", ["Login", "Create Account"], horizontal=True, label_visibility="collapsed")
         
@@ -1378,30 +1305,42 @@ with st.sidebar:
     
     else:
         # User is logged in
-        st.markdown(f"### 👤 {st.session_state.current_user}")
-        if st.button("🚪 Logout", use_container_width=True):
-            logout_user()
-            st.rerun()
-        
-        st.divider()
-    
+        _uname = st.session_state.current_user
+        _initials = _uname[:2].upper()
+        col_usr, col_out = st.columns([3, 1])
+        with col_usr:
+            st.markdown(f"""
+            <div style="display:flex;align-items:center;gap:9px;padding:0.4rem 0;">
+                <div style="width:30px;height:30px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:0.72em;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
+                <span style="font-size:0.88em;font-weight:600;color:#e2e8f0;">{_uname}</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with col_out:
+            if st.button("Out", key="logout_btn", help="Logout"):
+                logout_user()
+                st.rerun()
+
+        st.markdown('<div style="border-top:1px solid #1a2540;margin:0.75rem 0;"></div>', unsafe_allow_html=True)
+
     # Investor Profile section (only shown when logged in)
     if st.session_state.logged_in:
-        st.markdown("### ⚙️ Investor Profile")
-    
-    col_pref, col_toggle = st.columns([1, 0.3])
-    with col_pref:
-        st.markdown("**Your preferences**")
-    with col_toggle:
-        if st.button("✏️", help="Edit preferences", key="edit_prefs"):
-            st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard
-            st.rerun()
-    
+        col_pref, col_toggle = st.columns([3, 1])
+        with col_pref:
+            st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;">Investor Profile</div>', unsafe_allow_html=True)
+        with col_toggle:
+            if st.button("Edit", help="Edit preferences", key="edit_prefs"):
+                st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard
+                st.rerun()
+
     if st.session_state.investor_prefs:
-        st.markdown(f"**Name:** {st.session_state.investor_prefs.get('investor_name', '—')}")
-        st.markdown(f"**Stage:** {st.session_state.investor_prefs.get('preferred_stage', 'Any')}")
-        st.markdown(f"**Sector:** {st.session_state.investor_prefs.get('preferred_sector', 'Any')}")
-        st.markdown(f"**Min ARR:** ${st.session_state.investor_prefs.get('min_arr', 0):,}")
+        _ip = st.session_state.investor_prefs
+        st.markdown(f"""
+        <div style="background:#131929;border:1px solid #1e2a40;border-radius:10px;padding:10px 13px;margin-bottom:0.75rem;">
+            <div style="font-size:0.82em;color:#e2e8f0;font-weight:600;margin-bottom:4px;">{_ip.get('investor_name','—')}</div>
+            <div style="font-size:0.75em;color:#3a4a65;">{_ip.get('preferred_stage','Any')} · {_ip.get('preferred_sector','Any sector')}</div>
+            <div style="font-size:0.72em;color:#3a4a65;margin-top:2px;">Min ARR ${_ip.get('min_arr',0):,}</div>
+        </div>
+        """, unsafe_allow_html=True)
     else:
         st.info("👉 Set up your investor profile to personalize deal scoring.")
     
@@ -1478,243 +1417,155 @@ with st.sidebar:
     
     # Deal Pipeline section (only shown when logged in)
     if st.session_state.logged_in:
-        st.markdown("### 📁 Deal Pipeline")
-        
-        # Pipeline metrics
-        watchlist_count = len([d for d in st.session_state.saved_deals if d.get("status") == "watchlist"])
-        active_count = len([d for d in st.session_state.saved_deals if d.get("status") == "active"])
-        reviewed_count = len([d for d in st.session_state.saved_deals if d.get("status") == "reviewed"])
-        passed_count = len([d for d in st.session_state.saved_deals if d.get("status") == "passed"])
-        
-        # Metrics row
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("📌", watchlist_count, help="Watchlist")
-        col2.metric("⚡", active_count, help="Active")
-        col3.metric("📋", reviewed_count, help="Reviewed")
-        col4.metric("❌", passed_count, help="Passed")
-        
-        st.divider()
-        
-        # List selector tabs
+        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Pipeline</div>', unsafe_allow_html=True)
+
+        # Counts
+        wl_n = len([d for d in st.session_state.saved_deals if d.get("status") == "watchlist"])
+        ac_n = len([d for d in st.session_state.saved_deals if d.get("status") == "active"])
+        rv_n = len([d for d in st.session_state.saved_deals if d.get("status") == "reviewed"])
+        ps_n = len([d for d in st.session_state.saved_deals if d.get("status") == "passed"])
+
+        # 2x2 metric grid
+        st.markdown(f"""
+        <div class="pl-metrics">
+            <div class="pl-metric"><div class="pl-num">{wl_n}</div><div class="pl-lbl">Watchlist</div></div>
+            <div class="pl-metric"><div class="pl-num" style="color:#60a5fa;">{ac_n}</div><div class="pl-lbl">Active</div></div>
+            <div class="pl-metric"><div class="pl-num">{rv_n}</div><div class="pl-lbl">Reviewed</div></div>
+            <div class="pl-metric"><div class="pl-num" style="color:#475569;">{ps_n}</div><div class="pl-lbl">Passed</div></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # List selector
         list_tabs = st.segmented_control(
             "Select List",
             options=["watchlist", "active", "reviewed", "passed"],
-            format_func=lambda x: {"watchlist": "Watchlist", "active": "Active", "reviewed": "Reviewed", "passed": "Passed"}[x],
+            format_func=lambda x: {"watchlist": "Watch", "active": "Active", "reviewed": "Review", "passed": "Pass"}[x],
             default=st.session_state.active_list,
             label_visibility="collapsed"
         )
-        
         if list_tabs:
             st.session_state.active_list = list_tabs
-        
-        # Filters section
-        with st.expander("🔍 Filters", expanded=False):
-            # Stage filter
+
+        # Search
+        search_filter = st.text_input(
+            "Search",
+            value=st.session_state.deal_filters["search"],
+            placeholder="Search deals…",
+            label_visibility="collapsed",
+            key="sidebar_search"
+        )
+        st.session_state.deal_filters["search"] = search_filter
+
+        # Filters expander
+        with st.expander("Filters", expanded=False):
             all_stages = ["Pre-Seed", "Seed", "Series A", "Series B+"]
-            stage_filter = st.multiselect(
-                "Stage",
-                options=all_stages,
-                default=st.session_state.deal_filters["stages"]
-            )
+            stage_filter = st.multiselect("Stage", options=all_stages, default=st.session_state.deal_filters["stages"])
             st.session_state.deal_filters["stages"] = stage_filter
-            
-            # Sector filter
+
             all_sectors = list(set([d.get("sector") for d in st.session_state.saved_deals if d.get("sector")]))
-            sector_filter = st.multiselect(
-                "Sector",
-                options=sorted(all_sectors),
-                default=[s for s in st.session_state.deal_filters["sectors"] if s in all_sectors]
-            )
+            sector_filter = st.multiselect("Sector", options=sorted(all_sectors), default=[s for s in st.session_state.deal_filters["sectors"] if s in all_sectors])
             st.session_state.deal_filters["sectors"] = sector_filter
-            
-            # Decision filter
-            decision_filter = st.multiselect(
-                "Decision",
-                options=["Proceed", "Watch", "Pass"],
-                default=st.session_state.deal_filters["decisions"]
-            )
+
+            decision_filter = st.multiselect("Decision", options=["Proceed", "Watch", "Pass"], default=st.session_state.deal_filters["decisions"])
             st.session_state.deal_filters["decisions"] = decision_filter
-            
-            # Min ARR
-            min_arr_filter = st.number_input(
-                "Min ARR ($)",
-                min_value=0,
-                step=100000,
-                value=st.session_state.deal_filters["min_arr"]
-            )
-            st.session_state.deal_filters["min_arr"] = min_arr_filter
-            
-            # Search
-            search_filter = st.text_input(
-                "Search company",
-                value=st.session_state.deal_filters["search"],
-                placeholder="Company name..."
-            )
-            st.session_state.deal_filters["search"] = search_filter
-            
-            # Sort
-            sort_filter = st.selectbox(
-                "Sort by",
-                options=["last_updated", "probability", "arr"],
+
+            sort_filter = st.selectbox("Sort", options=["last_updated", "probability", "arr"],
                 format_func=lambda x: {"last_updated": "Last Updated", "probability": "Probability ↓", "arr": "ARR ↓"}[x],
-                index=["last_updated", "probability", "arr"].index(st.session_state.deal_filters["sort_by"])
-            )
+                index=["last_updated", "probability", "arr"].index(st.session_state.deal_filters["sort_by"]))
             st.session_state.deal_filters["sort_by"] = sort_filter
-            
-            if st.button("🔄 Reset Filters", use_container_width=True):
-                st.session_state.deal_filters = {
-                    "stages": [],
-                    "sectors": [],
-                    "decisions": [],
-                    "min_arr": 0,
-                    "search": "",
-                    "sort_by": "last_updated"
-                }
+
+            if st.button("Reset Filters", use_container_width=True):
+                st.session_state.deal_filters = {"stages": [], "sectors": [], "decisions": [], "min_arr": 0, "search": "", "sort_by": "last_updated"}
                 st.rerun()
-        
-        st.divider()
-        
-        # Get filtered deals for current list
+
+        st.markdown('<div style="border-top:1px solid #1a2540;margin:0.75rem 0;"></div>', unsafe_allow_html=True)
+
+        # Deal list
         filtered_deals = get_filtered_deals(st.session_state.active_list)
-        
-        st.caption(f"**{len(filtered_deals)} deals** in {st.session_state.active_list.capitalize()}")
-        
-        # Display deals
+        st.markdown(f'<div style="font-size:0.72em;color:#3a4a65;margin-bottom:0.5rem;">{len(filtered_deals)} deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
+
         if filtered_deals:
-            for deal in filtered_deals[:20]:  # Show max 20 in sidebar
-                decision_color = {
-                    "Proceed": "#34c759",
-                    "Watch": "#ff9500",
-                    "Pass": "#ff3b30"
-                }.get(deal.get("decision"), "#86868b")
-                
-                decision_emoji = {
-                    "Proceed": "✅",
-                    "Watch": "👀",
-                    "Pass": "❌"
-                }.get(deal.get("decision"), "📄")
-                
-                with st.container():
-                    # Company name button (clickable to load)
-                    if st.button(
-                        f"{decision_emoji} {deal['company']}",
-                        key=f"load_{deal['id']}",
-                        use_container_width=True
-                    ):
-                        load_deal(deal)
+            for _deal in filtered_deals[:20]:
+                _dc = {"Proceed": "#10b981", "Watch": "#f59e0b", "Pass": "#ef4444"}.get(_deal.get("decision"), "#475569")
+                _pct = f"{_deal.get('prob_next_round', 0):.0%}"
+                _is_active = (_deal.get("company") == (st.session_state.get("company") or ""))
+                _border = "#3b82f6" if _is_active else "#1e2a40"
+                _bg = "rgba(59,130,246,0.06)" if _is_active else "#131929"
+
+                st.markdown(f"""
+                <div style="background:{_bg};border:1px solid {_border};border-radius:10px;padding:9px 11px;margin-bottom:5px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:0.88em;font-weight:600;color:#e2e8f0;">{_deal['company']}</span>
+                        <span style="font-size:0.8em;font-weight:700;color:{_dc};">{_pct}</span>
+                    </div>
+                    <div style="font-size:0.72em;color:#3a4a65;margin-top:3px;">{_deal.get('stage','—')} · {_deal.get('sector','')[:22]}</div>
+                </div>
+                """, unsafe_allow_html=True)
+
+                load_col, move_col = st.columns([3, 2])
+                with load_col:
+                    if st.button("Open →", key=f"load_{_deal['id']}", use_container_width=True):
+                        load_deal(_deal)
                         st.session_state.active_tab = "Analysis"
-                        st.toast(f"✅ Loaded {deal['company']}")
+                        st.toast(f"Loaded {_deal['company']}")
                         st.rerun()
-                    
-                    # Compact info
-                    col1, col2, col3 = st.columns(3)
-                    col1.caption(deal.get("stage", "—"))
-                    col2.caption(f"{deal.get('prob_next_round', 0):.0%}")
-                    
-                    # Move to list dropdown
-                    with col3:
-                        new_status = st.selectbox(
-                            "Move",
-                            options=["watchlist", "active", "reviewed", "passed"],
-                            index=["watchlist", "active", "reviewed", "passed"].index(deal.get("status", "watchlist")),
-                            format_func=lambda x: {"watchlist": "📌", "active": "⚡", "reviewed": "📋", "passed": "❌"}[x],
-                            key=f"status_{deal['id']}",
-                            label_visibility="collapsed"
-                        )
-                        if new_status != deal.get("status"):
-                            update_deal_status(deal["id"], new_status)
-                            st.rerun()
-                    
-                    st.markdown("---")
+                with move_col:
+                    new_status = st.selectbox(
+                        "Move",
+                        options=["watchlist", "active", "reviewed", "passed"],
+                        index=["watchlist", "active", "reviewed", "passed"].index(_deal.get("status", "watchlist")),
+                        format_func=lambda x: {"watchlist": "📌", "active": "⚡", "reviewed": "📋", "passed": "❌"}[x],
+                        key=f"status_{_deal['id']}",
+                        label_visibility="collapsed"
+                    )
+                    if new_status != _deal.get("status"):
+                        update_deal_status(_deal["id"], new_status)
+                        st.rerun()
         else:
-            st.info(f"No deals in {st.session_state.active_list.capitalize()}")
-    
+            st.markdown(f'<div style="font-size:0.85em;color:#3a4a65;padding:1rem 0;text-align:center;">No deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
+
     elif st.session_state.logged_in:
-        st.markdown("### 📁 Deal Pipeline")
-        st.info("No saved deals yet. Run analysis and save your first deal!")
+        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Pipeline</div>', unsafe_allow_html=True)
+        st.markdown('<div style="font-size:0.85em;color:#3a4a65;text-align:center;padding:1rem 0;">No saved deals yet. Run analysis and save your first deal!</div>', unsafe_allow_html=True)
 
 # ========================================
-# DEAL HEADER (Dynamic)
-# ========================================
-company = st.session_state.get("company") or "—"
-stage = st.session_state.get("stage") or "—"
-sector = st.session_state.get("sector") or "—"
-timestamp = datetime.now().strftime("%b %d, %H:%M")
-
-st.markdown(f"""
-<div class="deal-header">
-    <div class="deal-header-row">
-        <div class="deal-header-item">
-            <div class="deal-header-label">Company</div>
-            <div class="deal-header-value">{company}</div>
-        </div>
-        <div class="deal-header-item">
-            <div class="deal-header-label">Stage</div>
-            <div class="deal-header-value">{stage}</div>
-        </div>
-        <div class="deal-header-item">
-            <div class="deal-header-label">Sector</div>
-            <div class="deal-header-value">{sector}</div>
-        </div>
-        <div class="deal-header-item">
-            <div class="deal-header-label">Last Updated</div>
-            <div class="deal-header-value">{timestamp}</div>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# ========================================
-# PROGRESS INDICATOR
+# PROGRESS STEPPER + TABS (combined)
 # ========================================
 docs_up, fields_filled, analysis_done = get_progress_status()
 
-col1, col2, col3, col4 = st.columns(4, gap="small")
-with col1:
-    check = "✓" if docs_up else "○"
-    color = "#34c759" if docs_up else "#e5e5ea"
-    st.markdown(f'<span style="color: {color}; font-size: 1.5em; margin-right: 0.5rem;">{check}</span><b>Docs Uploaded</b>', unsafe_allow_html=True)
+def _step(done, label):
+    color = "#10b981" if done else "#2a3550"
+    txt_color = "#34d399" if done else "#3a4a65"
+    tick = "✓" if done else "·"
+    return f'<span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78em;color:{txt_color};font-weight:600;"><span style="width:16px;height:16px;border-radius:50%;background:{color}20;border:1.5px solid {color};display:inline-flex;align-items:center;justify-content:center;font-size:0.7em;">{tick}</span>{label}</span>'
 
-with col2:
-    check = "✓" if st.session_state.extracted else "○"
-    color = "#34c759" if st.session_state.extracted else "#e5e5ea"
-    st.markdown(f'<span style="color: {color}; font-size: 1.5em; margin-right: 0.5rem;">{check}</span><b>Fields Extracted</b>', unsafe_allow_html=True)
+steps_html = f"""
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
+    {_step(docs_up, "Docs Uploaded")}
+    <span style="color:#1e2a40;font-size:0.75em;">──</span>
+    {_step(bool(st.session_state.extracted), "Fields Extracted")}
+    <span style="color:#1e2a40;font-size:0.75em;">──</span>
+    {_step(fields_filled, "Fields Filled")}
+    <span style="color:#1e2a40;font-size:0.75em;">──</span>
+    {_step(analysis_done, "Analyzed")}
+</div>
+"""
+st.markdown(steps_html, unsafe_allow_html=True)
 
-with col3:
-    check = "✓" if fields_filled else "○"
-    color = "#34c759" if fields_filled else "#e5e5ea"
-    st.markdown(f'<span style="color: {color}; font-size: 1.5em; margin-right: 0.5rem;">{check}</span><b>Fields Filled</b>', unsafe_allow_html=True)
+# Tab navigation
+_t = st.session_state.active_tab
+tab_col1, tab_col2, tab_col3, spacer = st.columns([1, 1, 1, 4])
+with tab_col1:
+    if st.button("📥  Intake", use_container_width=True, type="primary" if _t == "Intake" else "secondary"):
+        scroll_to_top(); st.session_state.active_tab = "Intake"; st.rerun()
+with tab_col2:
+    if st.button("📊  Analysis", use_container_width=True, type="primary" if _t == "Analysis" else "secondary"):
+        scroll_to_top(); st.session_state.active_tab = "Analysis"; st.rerun()
+with tab_col3:
+    if st.button("💬  Copilot", use_container_width=True, type="primary" if _t == "Copilot" else "secondary"):
+        scroll_to_top(); st.session_state.active_tab = "Copilot"; st.rerun()
 
-with col4:
-    check = "✓" if analysis_done else "○"
-    color = "#34c759" if analysis_done else "#e5e5ea"
-    st.markdown(f'<span style="color: {color}; font-size: 1.5em; margin-right: 0.5rem;">{check}</span><b>Analyzed</b>', unsafe_allow_html=True)
-
-st.divider()
-
-# ========================================
-# CUSTOM TAB BUTTONS
-# ========================================
-col1, col2, col3 = st.columns(3, gap="small")
-with col1:
-    if st.button("📥 Intake", use_container_width=True, type="primary" if st.session_state.active_tab == "Intake" else "secondary"):
-        scroll_to_top()
-        st.session_state.active_tab = "Intake"
-        st.rerun()
-
-with col2:
-    if st.button("📊 Analysis", use_container_width=True, type="primary" if st.session_state.active_tab == "Analysis" else "secondary"):
-        scroll_to_top()
-        st.session_state.active_tab = "Analysis"
-        st.rerun()
-
-with col3:
-    if st.button("💬 Copilot", use_container_width=True, type="primary" if st.session_state.active_tab == "Copilot" else "secondary"):
-        scroll_to_top()
-        st.session_state.active_tab = "Copilot"
-        st.rerun()
-
-st.divider()
+st.markdown('<div style="border-bottom:1px solid #1e2a40;margin:0.5rem 0 1.5rem;"></div>', unsafe_allow_html=True)
 
 # ========================================
 # TAB CONTENT
@@ -1988,363 +1839,397 @@ if st.session_state.active_tab == "Intake":
 elif st.session_state.active_tab == "Analysis":
     scroll_to_top()
     if not st.session_state.last_result:
-        st.info("👈 Complete deal intake and run analysis to see results.")
+        st.markdown("""
+        <div class="vc-card" style="text-align:center;padding:3rem 2rem;margin-top:2rem;">
+            <div style="font-size:2.5em;margin-bottom:1rem;">📊</div>
+            <div style="font-size:1.05em;font-weight:600;color:#e2e8f0;margin-bottom:0.5rem;">No Analysis Yet</div>
+            <div style="font-size:0.875em;color:#475569;">Complete deal intake and run analysis to see results here.</div>
+        </div>
+        """, unsafe_allow_html=True)
     else:
         deal = st.session_state.last_deal
         result = st.session_state.last_result
         prob = result["prob_next_round"]
         confidence = result.get("confidence", 0.72)
-        
-        # Calculate scores and metrics WITH PERSONALIZATION
+
+        # Core calculations
         category_scores, personalization_applied = calculate_category_scores(deal, st.session_state.investor_prefs)
         missing_metrics = check_missing_metrics(deal)
         decision, decision_emoji = get_investment_decision(prob)
-        
-        # Investment Decision Summary Card
-        st.markdown('<div class="form-section-title">📊 Investment Decision</div>', unsafe_allow_html=True)
-        
-        col1, col2, col3 = st.columns([2, 1, 1])
-        with col1:
-            decision_color = {"Proceed": "#34c759", "Watch": "#ff9500", "Pass": "#ff3b30"}[decision]
+
+        missing_count = sum(1 for v in missing_metrics.values() if not v)
+        time_to_diligence = 7 + missing_count * 2
+
+        deal_quality = 50
+        deal_quality += min(20, prob * 30)
+        deal_quality += min(15, (8 - missing_count) * 2)
+        deal_quality += min(15, category_scores.get("Fund Fit", 5) * 1.5)
+        deal_quality = max(0, min(100, deal_quality))
+        fit_score = int(category_scores.get("Fund Fit", 5) * 10)
+
+        arr_val = deal.get('arr_usd', 0) or 0
+        raise_val = deal.get('raise_amount_usd', 0) or 0
+        growth_pct = deal.get('growth_rate_pct', 0) or 0
+        runway = deal.get('runway_months', 0) or 0
+
+        arr_display = f"${arr_val/1_000_000:.1f}M" if arr_val >= 1_000_000 else f"${arr_val/1_000:.0f}K" if arr_val >= 1_000 else f"${arr_val}"
+        raise_display = f"${raise_val/1_000_000:.1f}M" if raise_val >= 1_000_000 else f"${raise_val/1_000:.0f}K" if raise_val >= 1_000 else f"${raise_val}"
+
+        # Decision colors
+        d_color = {"Proceed": "#10b981", "Watch": "#f59e0b", "Pass": "#ef4444"}[decision]
+        d_badge = {"Proceed": "badge-proceed", "Watch": "badge-watch", "Pass": "badge-pass"}[decision]
+        fit_color = "#10b981" if fit_score >= 70 else "#f59e0b" if fit_score >= 40 else "#ef4444"
+        q_color = "#10b981" if deal_quality >= 70 else "#f59e0b" if deal_quality >= 50 else "#ef4444"
+        g_class = "pv-green" if growth_pct > 10 else "pv-red" if growth_pct <= 0 else "pv-orange"
+        r_class = "pv-green" if runway >= 18 else "pv-orange" if runway >= 12 else "pv-red"
+        stage_class = {"Pre-Seed": "pv-purple", "Seed": "pv-blue", "Series A": "pv-green", "Series B+": "pv-orange"}.get(deal.get("stage", ""), "pv-blue")
+
+        # ── DEAL PILLS ROW ─────────────────────────────────────────────
+        st.markdown(f"""
+        <div class="pills-row">
+            <div class="pill"><span class="pill-lbl">Stage</span><span class="pill-val {stage_class}">{deal.get('stage','—')}</span></div>
+            <div class="pill" style="min-width:160px;"><span class="pill-lbl">Sector</span><span class="pill-val" style="font-size:0.8em;">{deal.get('sector','—')}</span></div>
+            <div class="pill"><span class="pill-lbl">ARR</span><span class="pill-val pv-green">{arr_display}</span></div>
+            <div class="pill"><span class="pill-lbl">Raising</span><span class="pill-val pv-orange">{raise_display}</span></div>
+            <div class="pill"><span class="pill-lbl">Runway</span><span class="pill-val {r_class}">{runway} mo</span></div>
+            <div class="pill"><span class="pill-lbl">Growth</span><span class="pill-val {g_class}">{growth_pct:.0f}%</span></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # ── PERSONALIZATION NOTICE ──────────────────────────────────────
+        if personalization_applied:
+            notice_text = " · ".join(personalization_applied)
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, {decision_color}15, {decision_color}08); 
-                        border-left: 4px solid {decision_color}; 
-                        padding: 20px; 
-                        border-radius: 12px; 
-                        margin-bottom: 10px;">
-                <div style="font-size: 14px; color: #86868b; margin-bottom: 8px;">RECOMMENDATION</div>
-                <div style="font-size: 32px; font-weight: 600; color: {decision_color}; margin-bottom: 4px;">
-                    {decision_emoji} {decision}
+            <div class="pers-notice">
+                <span style="margin-top:1px;">⊙</span>
+                <span>Personalization active — <strong>{notice_text}</strong></span>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # ── TWO-COLUMN LAYOUT: main + right panel ─────────────────────
+        main_col, right_col = st.columns([11, 5])
+
+        with main_col:
+            # ── TOP 3 CARDS ─────────────────────────────────────────────
+            c1, c2, c3 = st.columns(3)
+
+            with c1:
+                st.markdown(f"""
+                <div class="vc-card">
+                    <div class="vc-card-title">Investment Decision</div>
+                    <div class="{d_badge}" style="margin-bottom:1.1rem;display:inline-flex;">● {decision.upper()}</div>
+                    <div class="big-score" style="margin-top:0.5rem;">
+                        <span class="bs-pct" style="color:{d_color};">{prob:.0%}</span>
+                    </div>
+                    <div class="bs-sub">next-round probability</div>
+                    <div style="border-top:1px solid #141c2e;margin-top:0.75rem;padding-top:0.75rem;display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:0.75em;color:#3a4a65;">Model confidence</span>
+                        <span style="font-size:0.82em;font-weight:700;color:#64748b;">{int(confidence*100)}%</span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with c2:
+                sector_note = "Sector outside thesis" if any("sector" in p.lower() for p in (personalization_applied or [])) else "Sector match"
+                st.markdown(f"""
+                <div class="vc-card">
+                    <div class="vc-card-title">Investor Fit</div>
+                    <div class="big-score">
+                        <span class="bs-num" style="color:{fit_color};">{fit_score}</span>
+                        <span class="bs-denom">/100</span>
+                    </div>
+                    <div class="bs-sub">{sector_note}</div>
+                    <div class="bar-track" style="margin-top:auto;">
+                        <div class="bar-fill" style="width:{fit_score}%;background:{fit_color};"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with c3:
+                st.markdown(f"""
+                <div class="vc-card">
+                    <div class="vc-card-title">Deal Quality</div>
+                    <div class="big-score">
+                        <span class="bs-num" style="color:{q_color};">{deal_quality:.0f}</span>
+                        <span class="bs-denom">/100</span>
+                    </div>
+                    <div class="bs-sub">{missing_count}/8 key metrics missing · ~{time_to_diligence} days to complete diligence</div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:{deal_quality}%;background:{q_color};"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ── SCORE BREAKDOWN + WHY THIS SCORE ───────────────────────
+            sb_col, why_col = st.columns(2)
+
+            with sb_col:
+                bars_html = ""
+                for cat, score in category_scores.items():
+                    pct = score / 10.0 * 100
+                    col = "#10b981" if score >= 7 else "#f59e0b" if score >= 5 else "#ef4444"
+                    lbl = (cat[:9] + ".") if len(cat) > 10 else cat
+                    bars_html += f"""
+                    <div class="score-bar-row">
+                        <span class="sbl">{lbl}</span>
+                        <div class="bar-track"><div class="bar-fill" style="width:{pct}%;background:{col};"></div></div>
+                        <span class="sbv" style="color:{col};">{score:.1f}</span>
+                    </div>"""
+
+                st.markdown(f"""
+                <div class="vc-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <span class="vc-card-title" style="margin-bottom:0;">Score Breakdown</span>
+                        <span style="font-size:0.7em;color:#3a4a65;">{len(category_scores)} categories</span>
+                    </div>
+                    {bars_html}
+                </div>
+                """, unsafe_allow_html=True)
+
+            with why_col:
+                pos_html = ""
+                for drv in result.get("drivers_pos_detailed", [])[:2]:
+                    impact_str = drv.get('impact', '+5%')
+                    # Extract numeric delta if possible
+                    import re as _re
+                    _m = _re.search(r'(\d+)', str(impact_str))
+                    delta_num = _m.group(1) if _m else "5"
+                    desc = drv['explanation'][:72] + "…" if len(drv['explanation']) > 72 else drv['explanation']
+                    pos_html += f"""
+                    <div class="signal sig-pos">
+                        <div class="sig-icon si-up">↑</div>
+                        <div class="sig-body"><div class="sig-title">{drv['title']}</div><div class="sig-desc">{desc}</div></div>
+                        <span class="sig-delta sd-pos">+{delta_num}%</span>
+                    </div>"""
+
+                neg_html = ""
+                for drv in result.get("drivers_neg_detailed", [])[:2]:
+                    impact_str = drv.get('impact', '-5%')
+                    _m2 = _re.search(r'(\d+)', str(impact_str))
+                    delta_num2 = _m2.group(1) if _m2 else "4"
+                    desc2 = drv['explanation'][:72] + "…" if len(drv['explanation']) > 72 else drv['explanation']
+                    neg_html += f"""
+                    <div class="signal sig-neg">
+                        <div class="sig-icon si-dn">↓</div>
+                        <div class="sig-body"><div class="sig-title">{drv['title']}</div><div class="sig-desc">{desc2}</div></div>
+                        <span class="sig-delta sd-neg">-{delta_num2}%</span>
+                    </div>"""
+
+                st.markdown(f"""
+                <div class="vc-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+                        <span class="vc-card-title" style="margin-bottom:0;">Why This Score</span>
+                    </div>
+                    <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#10b981;margin-bottom:6px;">Positive Signals</div>
+                    {pos_html}
+                    <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#ef4444;margin:10px 0 6px;">Risk Factors</div>
+                    {neg_html}
+                </div>
+                """, unsafe_allow_html=True)
+
+            # ── NEW: STAGE BENCHMARKS ───────────────────────────────────
+            _stage = deal.get('stage', 'Seed')
+            _bench = {
+                "Pre-Seed": {"ARR": "$100K", "Growth": "15%", "Runway": "18 mo"},
+                "Seed":     {"ARR": "$500K", "Growth": "20%", "Runway": "18 mo"},
+                "Series A": {"ARR": "$2M",   "Growth": "30%", "Runway": "24 mo"},
+                "Series B+":{"ARR": "$10M",  "Growth": "50%", "Runway": "24 mo"},
+            }.get(_stage, {"ARR": "$500K", "Growth": "20%", "Runway": "18 mo"})
+
+            _arr_vs = "above" if arr_val >= 500_000 else "below"
+            _arr_color = "#34d399" if _arr_vs == "above" else "#f87171"
+            _growth_color = "#34d399" if growth_pct >= 20 else "#f87171" if growth_pct < 10 else "#fbbf24"
+            _run_color = "#34d399" if runway >= 18 else "#f87171" if runway < 12 else "#fbbf24"
+
+            st.markdown(f"""
+            <div class="vc-card">
+                <div class="vc-card-title">Stage Benchmarks vs. {_stage} Median</div>
+                <div class="bench-row">
+                    <span class="bl">ARR</span>
+                    <span class="bv" style="color:{_arr_color};">{arr_display}</span>
+                    <span class="ba">median {_bench['ARR']}</span>
+                </div>
+                <div class="bench-row">
+                    <span class="bl">Growth MoM</span>
+                    <span class="bv" style="color:{_growth_color};">{growth_pct:.0f}%</span>
+                    <span class="ba">median {_bench['Growth']}</span>
+                </div>
+                <div class="bench-row">
+                    <span class="bl">Runway</span>
+                    <span class="bv" style="color:{_run_color};">{runway} mo</span>
+                    <span class="ba">median {_bench['Runway']}</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)
-        
-        with col2:
-            st.metric("Probability", f"{prob:.0%}", help="Likelihood of raising next round")
-        
-        with col3:
-            st.metric("Confidence", f"{int(confidence * 100)}%", help="Model confidence in prediction")
-        
-        # Show personalization if applied
-        if personalization_applied:
-            st.markdown("**🎯 Personalization Applied:**")
-            for item in personalization_applied:
-                st.caption(f"• {item}")
-        
-        st.divider()
-        
-        # Color-coded tags for deal attributes
-        st.markdown("### 🏷️ Deal Overview")
-        
-        tag_col1, tag_col2, tag_col3, tag_col4 = st.columns(4)
-        
-        with tag_col1:
-            stage_colors = {
-                "Pre-Seed": "#5856d6",
-                "Seed": "#007AFF",
-                "Series A": "#34c759",
-                "Series B+": "#ff9500"
-            }
-            stage_color = stage_colors.get(deal.get("stage"), "#86868b")
+
+            # ── NEW: DEAL MOMENTUM / URGENCY ────────────────────────────
+            if runway <= 12:
+                urg_bg = "rgba(239,68,68,0.07)"; urg_bd = "rgba(239,68,68,0.18)"; urg_tc = "#f87171"
+                urg_msg = f"⚡  High urgency — only {runway} months runway remaining. Decision window is closing."
+            elif runway <= 18:
+                urg_bg = "rgba(245,158,11,0.07)"; urg_bd = "rgba(245,158,11,0.18)"; urg_tc = "#fbbf24"
+                urg_msg = f"⏳  Moderate urgency — {runway} months runway. Aim to decide within 30 days."
+            else:
+                urg_bg = "rgba(16,185,129,0.07)"; urg_bd = "rgba(16,185,129,0.18)"; urg_tc = "#34d399"
+                urg_msg = f"✓  Comfortable runway — {runway} months. No immediate pressure; thorough diligence recommended."
+
             st.markdown(f"""
-            <div style="background: {stage_color}20; border: 1px solid {stage_color}; padding: 8px 12px; border-radius: 20px; text-align: center;">
-                <div style="font-size: 11px; color: #86868b; font-weight: 500;">STAGE</div>
-                <div style="font-size: 14px; color: {stage_color}; font-weight: 600;">{deal.get('stage', '—')}</div>
+            <div style="background:{urg_bg};border:1px solid {urg_bd};border-radius:10px;padding:11px 15px;margin-bottom:1rem;font-size:0.84em;font-weight:500;color:{urg_tc};">
+                {urg_msg}
             </div>
             """, unsafe_allow_html=True)
-        
-        with tag_col2:
-            st.markdown(f"""
-            <div style="background: #007AFF20; border: 1px solid #007AFF; padding: 8px 12px; border-radius: 20px; text-align: center;">
-                <div style="font-size: 11px; color: #86868b; font-weight: 500;">SECTOR</div>
-                <div style="font-size: 14px; color: #007AFF; font-weight: 600;">{deal.get('sector', '—')}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with tag_col3:
-            arr_val = deal.get('arr_usd', 0)
-            arr_display = f"${arr_val/1_000_000:.1f}M" if arr_val >= 1_000_000 else f"${arr_val/1_000:.0f}K" if arr_val >= 1_000 else f"${arr_val}"
-            st.markdown(f"""
-            <div style="background: #34c75920; border: 1px solid #34c759; padding: 8px 12px; border-radius: 20px; text-align: center;">
-                <div style="font-size: 11px; color: #86868b; font-weight: 500;">ARR</div>
-                <div style="font-size: 14px; color: #34c759; font-weight: 600;">{arr_display}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        with tag_col4:
-            raise_val = deal.get('raise_amount_usd', 0)
-            raise_display = f"${raise_val/1_000_000:.1f}M" if raise_val >= 1_000_000 else f"${raise_val/1_000:.0f}K" if raise_val >= 1_000 else f"${raise_val}"
-            st.markdown(f"""
-            <div style="background: #ff950020; border: 1px solid #ff9500; padding: 8px 12px; border-radius: 20px; text-align: center;">
-                <div style="font-size: 11px; color: #86868b; font-weight: 500;">RAISING</div>
-                <div style="font-size: 14px; color: #ff9500; font-weight: 600;">{raise_display}</div>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.divider()
-        
-        # Top KPI Row
-        st.markdown("### 📊 Key Indicators")
-        
-        kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
-        
-        # Calculate missing info count
-        missing_count = sum(1 for available in missing_metrics.values() if not available)
-        
-        # Calculate time-to-diligence estimate (heuristic)
-        base_days = 7
-        extra_days = missing_count * 2  # 2 days per missing metric
-        time_to_diligence = base_days + extra_days
-        
-        # Calculate deal quality meter (0-100)
-        deal_quality = 50  # Base
-        deal_quality += min(20, prob * 30)  # Up to 30 from probability
-        deal_quality += min(15, (8 - missing_count) * 2)  # Penalize missing info
-        deal_quality += min(15, category_scores.get("Fund Fit", 5) * 1.5)  # Fund fit bonus
-        deal_quality = max(0, min(100, deal_quality))
-        
-        # Calculate investor fit score (0-100)
-        fit_score = int(category_scores.get("Fund Fit", 5) * 10)
-        
-        with kpi_col1:
-            st.metric(
-                "Next-Round Probability",
-                f"{prob:.0%}",
-                delta=f"{(prob - 0.62):.0%}" if prob != 0.62 else None,
-                help="Likelihood of successfully raising next round"
-            )
-        
-        with kpi_col2:
-            st.metric(
-                "Investor Fit Score",
-                f"{fit_score}/100",
-                help="How well this deal matches your preferences"
-            )
-        
-        with kpi_col3:
-            st.metric(
-                "Missing Info",
-                f"{missing_count}/8",
-                delta=f"{missing_count} gaps" if missing_count > 0 else "Complete",
-                delta_color="inverse",
-                help="Critical metrics not provided"
-            )
-        
-        with kpi_col4:
-            st.metric(
-                "Time to Diligence",
-                f"~{time_to_diligence} days",
-                help="Estimated time to complete diligence based on missing info"
-            )
-        
-        # Deal Quality Meter
-        st.markdown("**Deal Quality Score**")
-        quality_color = "#34c759" if deal_quality >= 70 else "#ff9500" if deal_quality >= 50 else "#ff3b30"
-        st.progress(deal_quality / 100)
-        st.caption(f"Overall quality: {deal_quality:.0f}/100")
-        
-        st.divider()
-        
-        # Score Breakdown
-        st.markdown('<div class="form-section-title">🎯 Score Breakdown</div>', unsafe_allow_html=True)
-        
-        col1, col2, col3 = st.columns(3)
-        for i, (category, score) in enumerate(category_scores.items()):
-            with [col1, col2, col3][i % 3]:
-                st.markdown(f"**{category}**")
-                st.progress(score / 10.0)
-                st.caption(f"{score:.1f}/10")
-        
-        st.divider()
-        
-        # Key Missing Metrics
-        with st.expander("📋 Key Metrics Checklist", expanded=False):
-            missing_count = sum(1 for available in missing_metrics.values() if not available)
-            st.caption(f"{len(missing_metrics) - missing_count} of {len(missing_metrics)} metrics available")
-            
-            col1, col2 = st.columns(2)
-            for i, (metric, available) in enumerate(missing_metrics.items()):
-                with [col1, col2][i % 2]:
-                    status = "✅" if available else "⚠️"
-                    color = "#34c759" if available else "#ff9500"
-                    st.markdown(f"<span style='color: {color};'>{status} {metric}</span>", unsafe_allow_html=True)
-        
-        st.divider()
-        
-        # Why This Score - Top 3 drivers and risks
-        st.markdown('<div class="form-section-title">💡 Why This Score?</div>', unsafe_allow_html=True)
-        
-        col_pos, col_neg = st.columns(2)
-        
-        with col_pos:
-            st.markdown("**Top Drivers**")
-            for i, driver_detail in enumerate(result.get("drivers_pos_detailed", [])[:3], 1):
-                with st.expander(f"✓ {driver_detail['title']}", expanded=False):
-                    st.markdown(driver_detail['explanation'])
-                    st.markdown(f"**Impact:** {driver_detail['impact']}")
-        
-        with col_neg:
-            st.markdown("**Top Risks**")
-            for i, driver_detail in enumerate(result.get("drivers_neg_detailed", [])[:3], 1):
-                with st.expander(f"⚠ {driver_detail['title']}", expanded=False):
-                    st.markdown(driver_detail['explanation'])
-                    st.markdown(f"**Impact:** {driver_detail['impact']}")
-        
-        # Full Details in Expanders
-        st.divider()
-        
-        with st.expander("📊 View All Positive Drivers", expanded=False):
-            for driver_detail in result.get("drivers_pos_detailed", []):
-                st.markdown(f"**✓ {driver_detail['title']}**")
-                st.markdown(driver_detail['explanation'])
-                st.markdown(f"*Impact: {driver_detail['impact']}*")
-                st.markdown("---")
-        
-        with st.expander("⚠️ View All Risk Drivers", expanded=False):
-            for driver_detail in result.get("drivers_neg_detailed", []):
-                st.markdown(f"**⚠ {driver_detail['title']}**")
-                st.markdown(driver_detail['explanation'])
-                st.markdown(f"*Impact: {driver_detail['impact']}*")
-                st.markdown("---")
-        
-        with st.expander("🚩 View All Red Flags & Missing Info", expanded=False):
-            for flag_detail in result.get("risk_flags_detailed", []):
-                st.markdown(f"**🚩 {flag_detail['title']}**")
-                st.markdown(flag_detail['explanation'])
-                if flag_detail.get('risk_level'):
-                    st.markdown(f"*Risk Level: {flag_detail['risk_level']}*")
-                st.markdown("---")
-        
-        st.divider()
-        
-        # Save Deal Section - Enhanced with list selection
-        st.markdown('<div class="form-section-title">💾 Save This Deal</div>', unsafe_allow_html=True)
-        
-        # Get suggested list based on decision
-        suggested_list = "active" if decision == "Proceed" else "watchlist" if decision == "Watch" else "passed" if decision == "Pass" else "reviewed"
-        suggested_label = suggested_list.capitalize()
-        
-        # Check if deal already exists
-        existing_deal = next((d for d in st.session_state.saved_deals if d.get("company") == deal.get("company")), None)
-        
-        with st.expander("📝 Save Deal Details", expanded=not bool(existing_deal)):
-            st.caption(f"💡 Based on '{decision}' recommendation, we suggest saving to: **{suggested_label}**")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                # Migrate old status values to new ones
-                current_status = existing_deal["status"] if existing_deal else suggested_list
-                if current_status not in ["watchlist", "active", "reviewed", "passed"]:
-                    # Map old statuses to new ones
-                    status_migration = {
-                        "inbound": "watchlist",
-                        "reviewing": "active",
-                        "diligencing": "active"
-                    }
-                    current_status = status_migration.get(current_status, "watchlist")
-                
-                save_status = st.selectbox(
-                    "Save to List",
-                    options=["watchlist", "active", "reviewed", "passed"],
-                    index=["watchlist", "active", "reviewed", "passed"].index(current_status),
-                    format_func=lambda x: {"watchlist": "📌 Watchlist", "active": "⚡ Active", "reviewed": "📋 Reviewed", "passed": "❌ Passed"}[x],
-                    key="save_status_select"
-                )
-            
-            with col2:
-                save_tags = st.text_input(
-                    "Tags (comma-separated)",
-                    value=", ".join(existing_deal.get("tags", [])) if existing_deal else "",
-                    placeholder="e.g., fintech, high-growth, founder-led",
-                    key="save_tags_input"
-                )
-            
-            col_save, col_cancel = st.columns(2)
-            
-            with col_save:
-                if st.button("💾 Save Deal", use_container_width=True, type="primary", key="save_deal_btn"):
-                    saved_status = save_deal_to_list(deal, result, save_status, save_tags)
-                    status_label = {"watchlist": "Watchlist", "active": "Active", "reviewed": "Reviewed", "passed": "Passed"}[saved_status]
-                    st.toast(f"✅ Saved {deal.get('company')} to {status_label}!")
-                    st.rerun()
-            
-            with col_cancel:
-                if existing_deal:
-                    st.caption(f"Last saved: {existing_deal.get('updated_at', 'Unknown')[:10]}")
-        
-        st.divider()
-        
-        # Generate Content Section - Keep existing functionality
-        st.markdown('<div class="form-section-title">🚀 Generate Content</div>', unsafe_allow_html=True)
-        
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            if st.button("❓ Founder Diligence Questions", use_container_width=True):
-                client = get_openai_client()
-                if client:
-                    with st.spinner("Generating questions..."):
-                        st.session_state.founder_questions = generate_founder_questions(deal, client)
-                    st.rerun()
-        
-        with col2:
-            if st.button("✉️ Founder Follow-up Email", use_container_width=True):
-                client = get_openai_client()
-                if client:
-                    with st.spinner("Drafting email..."):
-                        st.session_state.founder_followup = generate_founder_followup(deal, result, missing_metrics, client)
-                    st.rerun()
-        
-        with col3:
-            if st.button("📝 IC Memo", use_container_width=True):
-                client = get_openai_client()
-                if client:
-                    with st.spinner("Drafting memo..."):
-                        st.session_state.ic_memo = generate_ic_memo(deal, result, client)
-                    st.rerun()
-        
-        if st.session_state.founder_questions:
-            st.divider()
-            st.markdown("### ❓ Questions to Ask Founder")
-            st.write(st.session_state.founder_questions)
-            if st.button("📋 Copy Questions", key="copy_qs"):
-                st.toast("Copied to clipboard!")
-        
-        if st.session_state.founder_followup:
-            st.divider()
-            st.markdown("### ✉️ Founder Follow-up Email")
-            st.code(st.session_state.founder_followup, language=None)
-            
-            col_copy, col_send, col_empty = st.columns([1, 1, 2])
-            with col_copy:
-                if st.button("📋 Copy Email", key="copy_followup", use_container_width=True):
-                    st.toast("Email copied to clipboard!")
-            
-            with col_send:
+
+            # ── KEY METRICS CHECKLIST ───────────────────────────────────
+            with st.expander("📋 Key Metrics Checklist", expanded=False):
+                avail_n = sum(1 for v in missing_metrics.values() if v)
+                st.caption(f"{avail_n} of {len(missing_metrics)} metrics available")
+                cc1, cc2 = st.columns(2)
+                for i, (metric, available) in enumerate(missing_metrics.items()):
+                    with [cc1, cc2][i % 2]:
+                        icon = "✅" if available else "⚠️"
+                        col_m = "#34d399" if available else "#f59e0b"
+                        st.markdown(f"<span style='color:{col_m};font-size:0.88em;'>{icon} {metric}</span>", unsafe_allow_html=True)
+
+            # ── FULL DRIVER DETAILS ──────────────────────────────────────
+            with st.expander("📈 All Positive Drivers", expanded=False):
+                for drv in result.get("drivers_pos_detailed", []):
+                    st.markdown(f"**✓ {drv['title']}**")
+                    st.markdown(drv['explanation'])
+                    st.markdown(f"*Impact: {drv['impact']}*")
+                    st.markdown("---")
+
+            with st.expander("⚠️ All Risk Factors", expanded=False):
+                for drv in result.get("drivers_neg_detailed", []):
+                    st.markdown(f"**⚠ {drv['title']}**")
+                    st.markdown(drv['explanation'])
+                    st.markdown(f"*Impact: {drv['impact']}*")
+                    st.markdown("---")
+
+            with st.expander("🚩 Red Flags & Missing Info", expanded=False):
+                for flag in result.get("risk_flags_detailed", []):
+                    st.markdown(f"**🚩 {flag['title']}**")
+                    st.markdown(flag['explanation'])
+                    if flag.get('risk_level'):
+                        st.markdown(f"*Risk Level: {flag['risk_level']}*")
+                    st.markdown("---")
+
+            st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.5rem 0;"></div>', unsafe_allow_html=True)
+
+            # ── GENERATE CONTENT ─────────────────────────────────────────
+            st.markdown('<div class="sec-lbl">Generate Content</div>', unsafe_allow_html=True)
+            gc1, gc2, gc3 = st.columns(3)
+
+            with gc1:
+                if st.button("❓ Diligence Questions", use_container_width=True):
+                    client = get_openai_client()
+                    if client:
+                        with st.spinner("Generating..."):
+                            st.session_state.founder_questions = generate_founder_questions(deal, client)
+                        st.rerun()
+
+            with gc2:
+                if st.button("✉️ Follow-up Email", use_container_width=True):
+                    client = get_openai_client()
+                    if client:
+                        with st.spinner("Drafting..."):
+                            st.session_state.founder_followup = generate_founder_followup(deal, result, missing_metrics, client)
+                        st.rerun()
+
+            with gc3:
+                if st.button("📝 IC Memo", use_container_width=True):
+                    client = get_openai_client()
+                    if client:
+                        with st.spinner("Drafting memo..."):
+                            st.session_state.ic_memo = generate_ic_memo(deal, result, client)
+                        st.rerun()
+
+            # Display generated content
+            if st.session_state.founder_questions:
+                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown("**❓ Diligence Questions**")
+                st.write(st.session_state.founder_questions)
+
+            if st.session_state.founder_followup:
+                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown("**✉️ Follow-up Email**")
+                st.code(st.session_state.founder_followup, language=None)
                 if st.session_state.founder_email:
                     import urllib.parse
-                    
-                    # Prepare email components
-                    to_email = st.session_state.founder_email
-                    subject = f"Follow-up: {deal.get('company', 'Your Company')}"
-                    body = st.session_state.founder_followup
-                    
-                    # Create mailto link
-                    mailto_link = f"mailto:{to_email}?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
-                    
-                    st.markdown(f'<a href="{mailto_link}" target="_blank"><button style="width: 100%; padding: 0.5rem; background: #007AFF; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500;">📧 Send Email</button></a>', unsafe_allow_html=True)
+                    mailto_link = f"mailto:{st.session_state.founder_email}?subject={urllib.parse.quote('Follow-up: ' + deal.get('company',''))}&body={urllib.parse.quote(st.session_state.founder_followup)}"
+                    st.markdown(f'<a href="{mailto_link}" target="_blank"><button style="padding:8px 16px;background:#2563eb;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.87em;">📧 Open in Email Client</button></a>', unsafe_allow_html=True)
                 else:
-                    if st.button("📧 Send Email", key="send_email_disabled", use_container_width=True, disabled=True):
-                        pass
-                    st.caption("No contact email found in deck")
-        
-        if st.session_state.ic_memo:
-            st.divider()
-            st.markdown("### 📝 Investment Committee Memo")
-            st.write(st.session_state.ic_memo)
-            if st.button("📋 Copy Memo", key="copy_memo"):
-                st.toast("Copied to clipboard!")
+                    st.caption("No contact email found in deck — add it to Notes for mailto link")
+
+            if st.session_state.ic_memo:
+                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown("**📝 Investment Committee Memo**")
+                st.write(st.session_state.ic_memo)
+
+        # ── RIGHT PANEL ───────────────────────────────────────────────────
+        with right_col:
+
+            # Deal Info card
+            growth_vc = "#10b981" if growth_pct > 10 else "#ef4444" if growth_pct <= 0 else "#f59e0b"
+            runway_vc = "#10b981" if runway >= 18 else "#f59e0b" if runway >= 12 else "#ef4444"
+
+            st.markdown(f"""
+            <div class="vc-card">
+                <div class="vc-card-title">Deal Info</div>
+                <div class="di-row"><span class="di-lbl">Company</span><span class="di-val" style="color:#60a5fa;font-weight:700;">{deal.get('company','—')}</span></div>
+                <div class="di-row"><span class="di-lbl">Stage</span><span class="di-val" style="color:#60a5fa;">{deal.get('stage','—')}</span></div>
+                <div class="di-row"><span class="di-lbl">ARR</span><span class="di-val" style="color:#34d399;">{arr_display}</span></div>
+                <div class="di-row"><span class="di-lbl">Raising</span><span class="di-val">{raise_display}</span></div>
+                <div class="di-row"><span class="di-lbl">Growth MoM</span><span class="di-val" style="color:{growth_vc};">{growth_pct:.0f}%</span></div>
+                <div class="di-row"><span class="di-lbl">Runway</span><span class="di-val" style="color:{runway_vc};">{runway} months</span></div>
+                <div class="di-row"><span class="di-lbl">Sector</span><span class="di-val" style="font-size:0.8em;">{deal.get('sector','—')}</span></div>
+                <div class="di-row"><span class="di-lbl">Updated</span><span class="di-val" style="color:#3a4a65;">{datetime.now().strftime('%b %d · %H:%M')}</span></div>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Save Deal
+            st.markdown('<div class="sec-lbl" style="margin-top:0.25rem;">Save Deal</div>', unsafe_allow_html=True)
+
+            suggested_list = "active" if decision == "Proceed" else "watchlist" if decision == "Watch" else "passed"
+            existing_deal = next((d for d in st.session_state.saved_deals if d.get("company") == deal.get("company")), None)
+            current_status = existing_deal["status"] if existing_deal else suggested_list
+            if current_status not in ["watchlist", "active", "reviewed", "passed"]:
+                current_status = {"inbound": "watchlist", "reviewing": "active", "diligencing": "active"}.get(current_status, "watchlist")
+
+            save_status = st.selectbox(
+                "Pipeline list",
+                options=["watchlist", "active", "reviewed", "passed"],
+                index=["watchlist", "active", "reviewed", "passed"].index(current_status),
+                format_func=lambda x: {"watchlist": "📌 Watchlist", "active": "⚡ Active", "reviewed": "📋 Reviewed", "passed": "❌ Passed"}[x],
+                key="save_status_select",
+                label_visibility="collapsed"
+            )
+            save_tags = st.text_input(
+                "Tags",
+                value=", ".join(existing_deal.get("tags", [])) if existing_deal else "",
+                placeholder="e.g., b2b, high-growth, warm-intro",
+                key="save_tags_input",
+                label_visibility="collapsed"
+            )
+            if st.button("💾 Save Deal", use_container_width=True, type="primary", key="save_deal_btn"):
+                saved_status = save_deal_to_list(deal, result, save_status, save_tags)
+                st.toast(f"✅ Saved to {saved_status.capitalize()}!")
+                st.rerun()
+            if existing_deal:
+                st.caption(f"Last saved: {existing_deal.get('updated_at', '')[:10]}")
+
+            # Quick Copilot
+            st.markdown('<div class="sec-lbl" style="margin-top:1.25rem;">Quick Copilot</div>', unsafe_allow_html=True)
+
+            for _emoji, _label in [("🎯", "Competitive analysis"), ("💰", "Unit economics deep dive"), ("📊", "Market sizing"), ("🚨", "Risk assessment")]:
+                if st.button(f"{_emoji}  {_label}", key=f"qc_{_label}", use_container_width=True):
+                    st.session_state.active_tab = "Copilot"
+                    st.rerun()
+
+            st.markdown('<div style="margin-top:0.5rem;"></div>', unsafe_allow_html=True)
+            quick_ask = st.text_input("", placeholder="Ask about this deal…", key="quick_ask", label_visibility="collapsed")
+            if quick_ask:
+                st.session_state.active_tab = "Copilot"
+                st.rerun()
 
 elif st.session_state.active_tab == "Copilot":
     st.markdown('<div class="form-section-title">🤖 VCaaS Copilot</div>', unsafe_allow_html=True)
