@@ -181,15 +181,15 @@ st.markdown("""
     .dec-verdict{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
     .dec-pip{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
     .dec-word{font-size:20px;font-weight:700;letter-spacing:-0.03em;}
-    .dec-prob-num{font-size:52px;font-weight:800;font-family:var(--mono);letter-spacing:-0.05em;line-height:1;display:inline;}
-    .dec-prob-unit{font-size:22px;font-weight:500;font-family:var(--mono);color:var(--t3);}
+    .dec-prob-num{font-size:40px;font-weight:800;font-family:var(--mono);letter-spacing:-0.04em;line-height:1;display:inline;}
+    .dec-prob-unit{font-size:18px;font-weight:500;font-family:var(--mono);color:var(--t3);}
     .dec-prob-label{font-size:10px;color:var(--t3);margin-top:3px;}
     .dec-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--b0);margin-top:14px;}
     .dec-foot-l{font-size:10px;color:var(--t3);}
     .dec-foot-v{font-size:12px;font-weight:600;font-family:var(--mono);color:var(--t2);}
 
     /* KPI card */
-    .kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px 16px;display:flex;flex-direction:column;margin-bottom:12px;min-height:148px;}
+    .kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px 16px;display:flex;flex-direction:column;margin-bottom:12px;}
     .kpi-eye{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t3);margin-bottom:8px;}
     .kpi-num{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-0.04em;line-height:1;margin-bottom:4px;}
     .kpi-denom{font-size:14px;font-weight:400;color:var(--t3);}
@@ -282,11 +282,16 @@ st.markdown("""
 
     /* Misc */
     .sec-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t4);margin-bottom:8px;margin-top:4px;}
+    .form-section-title{font-size:11px;font-weight:600;color:var(--t2);margin:12px 0 6px;letter-spacing:-0.01em;}
     .c-green{color:var(--green)!important;} .c-amber{color:var(--amber)!important;}
     .c-red{color:var(--red)!important;}     .c-blue{color:var(--blue)!important;}
     .c-dim{color:var(--t3)!important;}      .c-t2{color:var(--t2)!important;}
     .ff-mono{font-family:var(--mono)!important;}
 
+    /* Overflow control */
+    .main .block-container{overflow-x:hidden!important;}
+    [data-testid="column"]{min-width:0!important;overflow:hidden!important;}
+    .stNumberInput input,.stTextInput input{min-width:0!important;width:100%!important;}
     </style>
 """, unsafe_allow_html=True)
 
@@ -1726,7 +1731,11 @@ if st.session_state.active_tab == "Intake":
                         st.session_state.founder_email = extract_contact_info(st.session_state.docs_text, client)
                     
                     if st.session_state.extracted:
-                        st.success("✅ Extraction successful!")
+                        # Auto-apply extracted fields to form
+                        for k in ["company", "stage", "sector", "raise_amount_usd", "arr_usd", "growth_rate_pct", "runway_months", "notes"]:
+                            if k in st.session_state.extracted and st.session_state.extracted[k] is not None:
+                                st.session_state[k] = st.session_state.extracted[k]
+                        st.success("✅ Fields extracted and applied!")
                         if st.session_state.founder_email:
                             st.info(f"📧 Found contact: {st.session_state.founder_email}")
                     else:
@@ -1741,19 +1750,12 @@ if st.session_state.active_tab == "Intake":
         with st.expander("View JSON", expanded=False):
             st.code(json.dumps(st.session_state.extracted, indent=2), language="json")
         
-        if st.button("✨ Apply to form", use_container_width=True, type="primary"):
-            for k in ["company", "stage", "sector", "raise_amount_usd", "arr_usd", "growth_rate_pct", "runway_months", "notes"]:
-                if k in st.session_state.extracted and st.session_state.extracted[k] is not None:
-                    st.session_state[k] = st.session_state.extracted[k]
-            st.success("✓ Fields applied!")
-            st.rerun()
-    
     st.divider()
     
     # Deal fields
     st.markdown('<div class="form-section-title">📋 Deal Details</div>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2, gap="large")
+    col1, col2 = st.columns(2, gap="small")
     
     with col1:
         st.markdown("**Company & Sector**")
@@ -1791,7 +1793,7 @@ if st.session_state.active_tab == "Intake":
         )
         st.session_state.raise_amount_usd = raise_input if raise_input > 0 else None
     
-    col1, col2 = st.columns(2, gap="large")
+    col1, col2 = st.columns(2, gap="small")
     
     with col1:
         st.markdown("**Traction**")
@@ -1986,7 +1988,7 @@ elif st.session_state.active_tab == "Analysis":
                     <div class="kpi-eye">Investor Fit</div>
                     <div><span class="kpi-num" style="color:{fit_color};">{fit_score}</span><span class="kpi-denom">/100</span></div>
                     <div class="kpi-caption">{sector_note}</div>
-                    <div class="kpi-track" style="margin-top:auto;"><div class="kpi-fill" style="width:{fit_score}%;background:{fit_color};"></div></div>
+                    <div class="kpi-track" style="margin-top:8px;"><div class="kpi-fill" style="width:{fit_score}%;background:{fit_color};"></div></div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1996,7 +1998,7 @@ elif st.session_state.active_tab == "Analysis":
                     <div class="kpi-eye">Deal Quality</div>
                     <div><span class="kpi-num" style="color:{q_color};">{deal_quality:.0f}</span><span class="kpi-denom">/100</span></div>
                     <div class="kpi-caption">{missing_count}/8 metrics missing · ~{time_to_diligence}d diligence</div>
-                    <div class="kpi-track" style="margin-top:auto;"><div class="kpi-fill" style="width:{deal_quality}%;background:{q_color};"></div></div>
+                    <div class="kpi-track" style="margin-top:8px;"><div class="kpi-fill" style="width:{deal_quality}%;background:{q_color};"></div></div>
                 </div>
                 """, unsafe_allow_html=True)
 
