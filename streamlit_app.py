@@ -63,7 +63,7 @@ st.markdown("""
     /* === SIDEBAR === */
     [data-testid="stSidebar"]{background:var(--s0)!important;border-right:1px solid var(--b0)!important;}
     [data-testid="stSidebar"]>div{padding:0!important;}
-    [data-testid="stSidebar"] *{font-family:var(--font)!important;}
+    [data-testid="stSidebar"] *{color:var(--t1)!important;font-family:var(--font)!important;}
     section[data-testid="stSidebar"]{width:256px!important;min-width:256px!important;max-width:256px!important;flex-shrink:0!important;}
     [data-testid="stSidebarResizeHandle"]{display:none!important;}
     [data-testid="stSidebarContent"]{width:256px!important;max-width:256px!important;}
@@ -91,15 +91,29 @@ st.markdown("""
     section[data-testid="stSidebar"] .stMarkdown p{font-size:11px!important;margin:0!important;color:var(--t2)!important;}
     /* Compact radio row for list filter */
     section[data-testid="stSidebar"] .stRadio{padding:0 8px!important;}
-    section[data-testid="stSidebar"] .stRadio label{font-size:10px!important;gap:3px!important;}
+    section[data-testid="stSidebar"] .stRadio label{
+        font-size:10px!important;font-weight:500!important;gap:3px!important;
+        color:var(--t2)!important;text-transform:none!important;letter-spacing:0!important;
+    }
     section[data-testid="stSidebar"] .stRadio [data-testid="stWidgetLabel"]{display:none!important;}
+    section[data-testid="stSidebar"] .stRadio div[role="radiogroup"]{gap:2px!important;}
     /* Deal card margin in sidebar */
     section[data-testid="stSidebar"] .deal-card{margin:0 6px 2px!important;}
 
     /* === TYPOGRAPHY === */
     h1,h2,h3,h4,h5,h6{font-family:var(--font)!important;color:var(--t1)!important;font-weight:600!important;letter-spacing:-0.02em!important;}
     p,.stMarkdown p,.stMarkdown li{color:var(--t2)!important;font-size:13px!important;line-height:1.5!important;}
-    label{color:var(--t3)!important;font-size:10px!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:0.06em!important;font-family:var(--font)!important;}
+    /* Form field labels: only target the actual label wrappers, not checkbox/radio span labels */
+    .stTextInput>label,.stSelectbox>label,.stTextArea>label,.stNumberInput>label,
+    .stFileUploader>label,.stSlider>label,.stDateInput>label,.stTimeInput>label{
+        color:var(--t3)!important;font-size:10px!important;font-weight:600!important;
+        text-transform:uppercase!important;letter-spacing:0.06em!important;font-family:var(--font)!important;
+    }
+    /* Checkbox / radio labels stay readable */
+    .stCheckbox label,.stRadio label{
+        color:var(--t2)!important;font-size:12px!important;font-weight:400!important;
+        text-transform:none!important;letter-spacing:0!important;
+    }
     .stCaption p{color:var(--t4)!important;font-size:10px!important;}
     strong{color:var(--t1)!important;}
     /* Tighter element spacing in main area */
