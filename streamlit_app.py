@@ -54,7 +54,11 @@ st.markdown("""
     /* === HIDE CHROME === */
     #MainMenu,footer,.stDeployButton,
     [data-testid="stToolbar"],[data-testid="stDecoration"],
-    [data-testid="stHeader"],[data-testid="stSidebarNav"]{display:none!important;}
+    [data-testid="stHeader"],[data-testid="stSidebarNav"],
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="collapsedControl"],
+    button[title="Collapse sidebar"],
+    button[title="Open sidebar"]{display:none!important;}
 
     /* === SIDEBAR === */
     [data-testid="stSidebar"]{background:var(--s0)!important;border-right:1px solid var(--b0)!important;}
@@ -159,6 +163,13 @@ st.markdown("""
     .tb-btn.active{background:var(--s3);color:var(--t1);border-color:var(--b2);}
     .tb-export{height:26px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;}
     .tb-new{height:26px;padding:0 10px;border-radius:var(--r-sm);border:none;background:var(--blue);color:white;font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;}
+
+    /* Tab row — the Streamlit button row acts as real tabs */
+    .tab-row-wrap [data-testid="stHorizontalBlock"]{gap:4px!important;align-items:center!important;}
+    .tab-row-wrap .stButton>button{height:30px!important;font-size:11px!important;font-weight:500!important;padding:0 14px!important;border-radius:var(--r-sm)!important;border:1px solid var(--b1)!important;background:transparent!important;color:var(--t3)!important;transition:all 0.1s!important;}
+    .tab-row-wrap .stButton>button:hover{background:var(--s3)!important;color:var(--t1)!important;border-color:var(--b2)!important;}
+    .tab-row-wrap .stButton>button[kind="primary"]{background:var(--s3)!important;color:var(--t1)!important;border-color:var(--b2)!important;}
+    .tab-row-wrap .stButton>button[kind="secondary"]{background:transparent!important;color:var(--t3)!important;}
 
     /* Context strip */
     .context-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
@@ -396,6 +407,10 @@ if "deal_filters" not in st.session_state:
 
 if "active_content" not in st.session_state:
     st.session_state.active_content = None
+
+# Score adjustment: set of disabled flag titles (investor overrides)
+if "disabled_neg_flags" not in st.session_state:
+    st.session_state.disabled_neg_flags = set()
 
 # Auto-login check using query params (runs once per session)
 if not st.session_state.auto_login_checked:
@@ -1303,6 +1318,7 @@ _tab_html = "".join([
     for _n in ["Intake", "Analysis", "Copilot"]
 ])
 
+# Topbar: breadcrumb + status chip only (no HTML tab buttons — real buttons below handle nav)
 st.markdown(f"""
 <div class="vc-topbar">
   <div class="vc-bc">
@@ -1313,16 +1329,12 @@ st.markdown(f"""
     <span class="vc-bc-active">{_company_bc}</span>
   </div>
   {_chip_html}
-  <div style="margin-left:12px;display:flex;gap:3px;">{_tab_html}</div>
-  <div class="vc-tb-right">
-    <span class="vc-tb-div"></span>
-    <button class="tb-export" onclick="">↓ Export</button>
-  </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Real tab + action buttons (functional Streamlit)
-_tb_c1, _tb_c2, _tb_c3, _sp, _exp_c, _new_c = st.columns([1,1,1,4,1,1])
+# Tab + action row (single source of truth for navigation)
+st.markdown('<div class="tab-row-wrap">', unsafe_allow_html=True)
+_tb_c1, _tb_c2, _tb_c3, _sp, _exp_c, _new_c = st.columns([1, 1, 1, 5, 1, 1])
 with _tb_c1:
     if st.button("Intake", use_container_width=True,
                  type="primary" if _t == "Intake" else "secondary", key="tab_intake"):
@@ -1336,14 +1348,13 @@ with _tb_c3:
                  type="primary" if _t == "Copilot" else "secondary", key="tab_copilot"):
         scroll_to_top(); st.session_state.active_tab = "Copilot"; st.rerun()
 with _exp_c:
-    if st.button("↓ Export", use_container_width=True):
+    if st.button("↓ Export", use_container_width=True, key="export_btn"):
         st.toast("Export coming soon!")
 with _new_c:
-    if st.button("+ New Deal", use_container_width=True, type="primary"):
-        reset_deal()
-        st.rerun()
-
-st.markdown('<div style="border-bottom:1px solid var(--b0);margin:4px 0 14px;"></div>', unsafe_allow_html=True)
+    if st.button("+ New Deal", use_container_width=True, type="primary", key="new_deal_btn"):
+        reset_deal(); st.rerun()
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('<div style="border-bottom:1px solid var(--b0);margin:2px 0 16px;"></div>', unsafe_allow_html=True)
 
 # ========================================
 # SIDEBAR: AUTHENTICATION & INVESTOR PROFILE
@@ -1519,8 +1530,6 @@ with st.sidebar:
     
     # Deal Pipeline section (only shown when logged in)
     if st.session_state.logged_in:
-        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Pipeline</div>', unsafe_allow_html=True)
-
         # Pipeline counts
         wl_n = len([d for d in st.session_state.saved_deals if d.get("status") == "watchlist"])
         ac_n = len([d for d in st.session_state.saved_deals if d.get("status") == "active"])
@@ -1884,6 +1893,7 @@ if st.session_state.active_tab == "Intake":
                 st.session_state.founder_questions = None
                 st.session_state.founder_followup = None
                 st.session_state.ic_memo = None
+                st.session_state.disabled_neg_flags = set()  # reset overrides on new analysis
                 
                 # Switch to Analysis tab
                 st.session_state.active_tab = "Analysis"
@@ -2267,8 +2277,89 @@ elif st.session_state.active_tab == "Analysis":
             if existing_deal:
                 st.caption(f"Last saved: {existing_deal.get('updated_at', '')[:10]}")
 
+            # ── SCORE ADJUSTMENT PANEL ───────────────────────────────────
+            st.markdown('<div style="border-top:1px solid var(--b1);margin:12px 0 10px;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="sec-lbl">Score Adjustment</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div style="font-size:10px;color:var(--t3);margin-bottom:8px;line-height:1.4;">'
+                'Uncheck any flag you can explain with off-model context (e.g. imminent contract, insider round). '
+                'The score recalculates instantly.</div>',
+                unsafe_allow_html=True
+            )
+
+            _neg_flags = result.get("drivers_neg_detailed", [])
+            _base_prob = result.get("prob_next_round", 0)
+            _adj_delta = 0.0
+            _any_override = False
+
+            import re as _re2
+            for _fi, _flag in enumerate(_neg_flags):
+                _ftitle = _flag.get("title", f"Flag {_fi}")
+                _fexpl  = _flag.get("explanation", "")[:80] + ("…" if len(_flag.get("explanation","")) > 80 else "")
+                _fimp   = _flag.get("impact", "")
+                _fkey   = f"flag_override_{_fi}"
+
+                # Parse impact number
+                _fm = _re2.search(r'(-?\d+(?:\.\d+)?)', str(_fimp))
+                _fnum = float(_fm.group(1)) if _fm else -2.0
+
+                _is_disabled = _ftitle in st.session_state.disabled_neg_flags
+                _enabled = not _is_disabled
+
+                col_chk, col_txt = st.columns([1, 8])
+                with col_chk:
+                    _checked = st.checkbox("", value=_enabled, key=_fkey, label_visibility="collapsed")
+                with col_txt:
+                    _lbl_color = "var(--t2)" if _checked else "var(--t4)"
+                    _imp_color = "#f0455a" if _checked else "var(--t4)"
+                    _pct_str = f"{abs(_fnum):.0f}%"
+                    st.markdown(
+                        f'<div style="padding:3px 0;">'
+                        f'<div style="font-size:11px;font-weight:500;color:{_lbl_color};line-height:1.3">{_ftitle}</div>'
+                        f'<div style="font-size:10px;color:var(--t3);margin-top:1px;">{_fexpl}</div>'
+                        f'<div style="font-size:9.5px;color:{_imp_color};font-weight:600;margin-top:2px;">impact: −{_pct_str}</div>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+
+                # Handle toggle changes
+                if _checked and _ftitle in st.session_state.disabled_neg_flags:
+                    st.session_state.disabled_neg_flags.discard(_ftitle)
+                    st.rerun()
+                elif not _checked and _ftitle not in st.session_state.disabled_neg_flags:
+                    st.session_state.disabled_neg_flags.add(_ftitle)
+                    st.rerun()
+
+                if _ftitle in st.session_state.disabled_neg_flags:
+                    _adj_delta += abs(_fnum) / 100.0
+                    _any_override = True
+
+            # Show adjusted score if any overrides active
+            if _any_override:
+                _adj_prob = min(0.99, _base_prob + _adj_delta)
+                _adj_pct = int(_adj_prob * 100)
+                _adj_dec, _ = get_investment_decision(_adj_prob)
+                _adj_clr = {"Proceed": "#00c27a", "Watch": "#f5a623", "Pass": "#f0455a"}[_adj_dec]
+                st.markdown(
+                    f'<div style="background:rgba(76,142,255,0.06);border:1px solid rgba(76,142,255,0.18);'
+                    f'border-radius:8px;padding:10px 12px;margin-top:8px;">'
+                    f'<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;'
+                    f'color:var(--t3);margin-bottom:4px;">Adjusted Score</div>'
+                    f'<div style="display:flex;align-items:baseline;gap:6px;">'
+                    f'<span style="font-size:28px;font-weight:800;font-family:var(--mono);color:{_adj_clr}">{_adj_pct}%</span>'
+                    f'<span style="font-size:11px;color:var(--t3);">vs base {int(_base_prob*100)}%</span>'
+                    f'</div>'
+                    f'<div style="font-size:10px;color:{_adj_clr};font-weight:600;margin-top:2px;">{_adj_dec}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
+                if st.button("↺ Reset all flags", key="reset_flags", use_container_width=True):
+                    st.session_state.disabled_neg_flags = set()
+                    st.rerun()
+
             # Quick Copilot
-            st.markdown('<div class="sec-lbl" style="margin-top:1.25rem;">Quick Copilot</div>', unsafe_allow_html=True)
+            st.markdown('<div style="border-top:1px solid var(--b1);margin:12px 0 10px;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="sec-lbl">Quick Copilot</div>', unsafe_allow_html=True)
 
             for _emoji, _label in [("🎯", "Competitive analysis"), ("💰", "Unit economics deep dive"), ("📊", "Market sizing"), ("🚨", "Risk assessment")]:
                 if st.button(f"{_emoji}  {_label}", key=f"qc_{_label}", use_container_width=True):
