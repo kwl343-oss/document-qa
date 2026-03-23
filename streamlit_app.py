@@ -30,230 +30,262 @@ EXTRACT_SCHEMA = {
 # ========================================
 st.markdown("""
     <style>
-    * {
-        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-        box-sizing: border-box;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600&display=swap');
+    *,*::before,*::after{box-sizing:border-box;}
 
     :root {
-        --primary: #3b82f6;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --dark: #0b0f1a;
-        --card: #131929;
-        --card-border: #1e2a40;
-        --text: #e2e8f0;
-        --muted: #475569;
-        --subtle: #64748b;
+      --bg:#07080c; --s0:#0b0d13; --s1:#0f1117; --s2:#141720;
+      --s3:#191d28; --s4:#1e2330; --s5:#232839;
+      --b0:rgba(255,255,255,0.04); --b1:rgba(255,255,255,0.07);
+      --b2:rgba(255,255,255,0.11); --b3:rgba(255,255,255,0.18);
+      --t1:#eeeef2; --t2:#a0a3b8; --t3:#5a5e7a; --t4:#2e3248;
+      --blue:#4c8eff; --violet:#7c6af7; --green:#00c27a;
+      --amber:#f5a623; --red:#f0455a;
+      --font:'Geist',-apple-system,sans-serif;
+      --mono:'Geist Mono',monospace;
+      --r-sm:6px; --r-md:10px; --r-lg:14px;
     }
     
     /* ===== DARK BASE ===== */
-    .stApp { background: #0b0f1a !important; color: #e2e8f0 !important; }
-    .main .block-container { padding-top: 1.5rem !important; max-width: 100% !important; }
+    html,body{background:var(--bg);color:var(--t1);font-family:var(--font);font-size:13px;-webkit-font-smoothing:antialiased;}
+    .stApp{background:var(--bg)!important;}
+    .main .block-container{padding:0 20px 40px!important;max-width:100%!important;}
 
-    /* ===== SIDEBAR ===== */
-    [data-testid="stSidebar"] { background: #0d1424 !important; border-right: 1px solid #1e2a40 !important; }
-    [data-testid="stSidebar"] * { color: #e2e8f0 !important; }
-    [data-testid="stSidebar"] hr { border-color: #1e2a40 !important; }
-    [data-testid="stSidebarNav"] { display: none; }
+    /* === HIDE CHROME === */
+    #MainMenu,footer,.stDeployButton,
+    [data-testid="stToolbar"],[data-testid="stDecoration"],
+    [data-testid="stHeader"],[data-testid="stSidebarNav"]{display:none!important;}
 
-    /* ===== TYPOGRAPHY ===== */
-    h1, h2, h3, h4, h5, h6 { color: #f1f5f9 !important; font-weight: 600 !important; letter-spacing: -0.02em; }
-    p, .stMarkdown p, .stMarkdown li { color: #cbd5e1 !important; }
-    label { color: #94a3b8 !important; font-size: 0.85em !important; }
-    .stCaption p { color: #64748b !important; }
+    /* === SIDEBAR === */
+    [data-testid="stSidebar"]{background:var(--s0)!important;border-right:1px solid var(--b0)!important;}
+    [data-testid="stSidebar"]>div{padding:0!important;}
+    [data-testid="stSidebar"] *{color:var(--t1)!important;font-family:var(--font)!important;}
+    section[data-testid="stSidebar"]{min-width:248px!important;max-width:248px!important;}
 
-    /* ===== INPUTS ===== */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stTextArea > div > div > textarea {
-        background: #1a2035 !important; color: #e2e8f0 !important;
-        border: 1px solid #2a3550 !important; border-radius: 10px !important;
-        font-size: 0.92em !important; padding: 0.6rem 0.85rem !important;
+    /* === TYPOGRAPHY === */
+    h1,h2,h3,h4,h5,h6{font-family:var(--font)!important;color:var(--t1)!important;font-weight:600!important;letter-spacing:-0.02em!important;}
+    p,.stMarkdown p,.stMarkdown li{color:var(--t2)!important;font-size:13px!important;}
+    label{color:var(--t3)!important;font-size:10px!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:0.06em!important;font-family:var(--font)!important;}
+    .stCaption p{color:var(--t4)!important;}
+
+    /* === INPUTS === */
+    .stTextInput>div>div>input,.stNumberInput>div>div>input,.stTextArea>div>div>textarea{
+      background:var(--s2)!important;color:var(--t1)!important;
+      border:1px solid var(--b2)!important;border-radius:var(--r-sm)!important;
+      font-family:var(--font)!important;font-size:12px!important;
     }
-    .stTextInput > div > div > input:focus,
-    .stNumberInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+    .stTextInput>div>div>input:focus,.stTextArea>div>div>textarea:focus{
+      border-color:var(--blue)!important;box-shadow:0 0 0 2px rgba(76,142,255,0.12)!important;
     }
-    .stSelectbox > div > div,
-    .stMultiSelect > div > div {
-        background: #1a2035 !important; color: #e2e8f0 !important;
-        border: 1px solid #2a3550 !important; border-radius: 10px !important;
+    .stSelectbox>div>div,[data-baseweb="select"]>div{
+      background:var(--s2)!important;border:1px solid var(--b2)!important;
+      border-radius:var(--r-sm)!important;
     }
-    [data-baseweb="select"] * { color: #e2e8f0 !important; background: #1a2035 !important; }
-    [data-baseweb="menu"] { background: #1a2035 !important; border: 1px solid #2a3550 !important; }
+    [data-baseweb="select"] *{color:var(--t2)!important;font-family:var(--font)!important;}
+    [data-baseweb="menu"]{background:var(--s2)!important;border:1px solid var(--b2)!important;}
+    [data-baseweb="option"]:hover{background:var(--s3)!important;}
 
-    /* ===== BUTTONS ===== */
-    .stButton > button {
-        background: #1a2035 !important; color: #cbd5e1 !important;
-        border: 1px solid #2a3550 !important; border-radius: 10px !important;
-        font-weight: 500 !important; font-size: 0.88em !important;
-        padding: 0.55rem 1.1rem !important; transition: all 0.15s ease !important;
+    /* === BUTTONS === */
+    .stButton>button{
+      background:transparent!important;color:var(--t3)!important;
+      border:1px solid var(--b2)!important;border-radius:var(--r-sm)!important;
+      font-family:var(--font)!important;font-size:11px!important;font-weight:500!important;
+      height:28px!important;padding:0 10px!important;transition:all 0.1s!important;
     }
-    .stButton > button:hover {
-        background: #243050 !important; border-color: #3b82f6 !important;
-        color: #93c5fd !important;
-    }
-    .stButton > button[kind="primary"] {
-        background: #2563eb !important; color: white !important;
-        border: none !important; box-shadow: 0 0 20px rgba(37,99,235,0.3) !important;
-    }
-    .stButton > button[kind="primary"]:hover { background: #1d4ed8 !important; }
+    .stButton>button:hover{background:var(--s3)!important;color:var(--t1)!important;border-color:var(--b3)!important;}
+    .stButton>button[kind="primary"]{background:var(--blue)!important;border-color:transparent!important;color:white!important;}
+    .stButton>button[kind="primary"]:hover{background:#3a7dee!important;}
+    .stButton>button[kind="secondary"]{background:var(--s2)!important;color:var(--t2)!important;border-color:var(--b1)!important;}
+    .stButton>button[kind="secondary"]:hover{background:var(--s3)!important;color:var(--t1)!important;}
+    [data-testid="stFormSubmitButton"]>button{background:var(--blue)!important;color:white!important;border:none!important;}
 
-    /* ===== METRICS ===== */
-    [data-testid="metric-container"] {
-        background: #131929 !important; border: 1px solid #1e2a40 !important;
-        border-radius: 14px !important; padding: 1.1rem 1.25rem !important;
-    }
-    [data-testid="metric-container"] label { color: #475569 !important; font-size: 0.72em !important; text-transform: uppercase !important; letter-spacing: 0.06em !important; }
-    [data-testid="stMetricValue"] { color: #f1f5f9 !important; font-weight: 700 !important; }
-    [data-testid="stMetricDelta"] { color: #64748b !important; }
+    /* === EXPANDER === */
+    [data-testid="stExpander"]{background:var(--s1)!important;border:1px solid var(--b1)!important;border-radius:var(--r-lg)!important;margin-bottom:8px!important;}
+    [data-testid="stExpander"] summary{color:var(--t2)!important;font-size:12px!important;}
 
-    /* ===== PROGRESS ===== */
-    .stProgress > div > div > div { background: #1e2a40 !important; border-radius: 999px !important; height: 5px !important; }
-    .stProgress > div > div > div > div { background: linear-gradient(90deg, #3b82f6, #10b981) !important; border-radius: 999px !important; }
+    /* === ALERTS === */
+    [data-testid="stInfo"]{background:rgba(76,142,255,0.05)!important;border:1px solid rgba(76,142,255,0.15)!important;border-radius:var(--r-md)!important;}
+    [data-testid="stWarning"]{background:rgba(245,166,35,0.05)!important;border:1px solid rgba(245,166,35,0.15)!important;border-radius:var(--r-md)!important;}
+    [data-testid="stSuccess"]{background:rgba(0,194,122,0.05)!important;border:1px solid rgba(0,194,122,0.15)!important;border-radius:var(--r-md)!important;}
+    [data-testid="stError"]{background:rgba(240,69,90,0.05)!important;border:1px solid rgba(240,69,90,0.15)!important;border-radius:var(--r-md)!important;}
 
-    /* ===== DIVIDER ===== */
-    hr, [data-testid="stDivider"] { border-color: #1e2a40 !important; margin: 1.5rem 0 !important; }
+    /* === MISC === */
+    [data-testid="stFileUploader"]{background:var(--s1)!important;border:2px dashed var(--b2)!important;border-radius:var(--r-lg)!important;}
+    [data-testid="stFileUploader"] *{color:var(--t3)!important;}
+    [data-testid="stChatInput"]>div{background:var(--s2)!important;border:1px solid var(--b2)!important;border-radius:var(--r-md)!important;}
+    [data-testid="stChatMessage"]{background:var(--s1)!important;border:1px solid var(--b1)!important;border-radius:var(--r-lg)!important;}
+    hr,[data-testid="stDivider"]{border-color:var(--b1)!important;margin:1rem 0!important;}
+    [data-testid="metric-container"]{background:var(--s1)!important;border:1px solid var(--b1)!important;border-radius:var(--r-lg)!important;padding:14px 16px!important;}
+    [data-testid="metric-container"] label{color:var(--t3)!important;font-size:9.5px!important;}
+    [data-testid="stMetricValue"]{color:var(--t1)!important;font-weight:700!important;font-family:var(--mono)!important;}
+    ::-webkit-scrollbar{width:3px;height:3px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
 
-    /* ===== EXPANDER ===== */
-    [data-testid="stExpander"] { background: #131929 !important; border: 1px solid #1e2a40 !important; border-radius: 12px !important; }
-    [data-testid="stExpander"] summary { color: #e2e8f0 !important; }
+    /* ════════════════════════════════════════
+       CUSTOM COMPONENTS
+    ════════════════════════════════════════ */
 
-    /* ===== INFO/ALERTS ===== */
-    [data-testid="stInfo"] { background: rgba(59,130,246,0.08) !important; border: 1px solid rgba(59,130,246,0.25) !important; border-radius: 12px !important; color: #93c5fd !important; }
-    [data-testid="stWarning"] { background: rgba(245,158,11,0.08) !important; border: 1px solid rgba(245,158,11,0.2) !important; border-radius: 12px !important; }
-    [data-testid="stSuccess"] { background: rgba(16,185,129,0.08) !important; border: 1px solid rgba(16,185,129,0.2) !important; border-radius: 12px !important; }
+    /* Top bar */
+    .vc-topbar{display:flex;align-items:center;gap:8px;padding:10px 0 12px;border-bottom:1px solid var(--b0);margin-bottom:16px;flex-wrap:wrap;}
+    .vc-bc{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t3);}
+    .vc-bc-sep{color:var(--t4);font-size:10px;}
+    .vc-bc-crumb{color:var(--t2);}
+    .vc-bc-active{color:var(--t1)!important;font-weight:500;}
+    .vc-tb-right{margin-left:auto;display:flex;align-items:center;gap:5px;}
+    .vc-tb-div{width:1px;height:14px;background:var(--b1);margin:0 2px;display:inline-block;vertical-align:middle;}
 
-    /* ===== FILE UPLOADER ===== */
-    [data-testid="stFileUploader"] { background: #131929 !important; border: 2px dashed #2a3550 !important; border-radius: 12px !important; }
-    [data-testid="stFileUploader"] * { color: #64748b !important; }
+    /* Status chip */
+    .status-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;}
+    .sc-watch{background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);color:var(--amber);}
+    .sc-proceed{background:rgba(0,194,122,0.07);border:1px solid rgba(0,194,122,0.2);color:var(--green);}
+    .sc-pass{background:rgba(240,69,90,0.07);border:1px solid rgba(240,69,90,0.2);color:var(--red);}
+    .sc-pip{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block;margin-right:2px;}
 
-    /* ===== CHAT ===== */
-    [data-testid="stChatInput"] > div { background: #1a2035 !important; border: 1px solid #2a3550 !important; border-radius: 12px !important; }
-    [data-testid="stChatMessage"] { background: #131929 !important; border: 1px solid #1e2a40 !important; border-radius: 12px !important; }
+    /* Inline tab buttons (in topbar) */
+    .tb-btn{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--r-sm);border:1px solid transparent;background:transparent;color:var(--t3);font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all 0.1s;}
+    .tb-btn:hover{background:var(--s3);color:var(--t1);border-color:var(--b2);}
+    .tb-btn.active{background:var(--s3);color:var(--t1);border-color:var(--b2);}
+    .tb-export{height:26px;padding:0 10px;border-radius:var(--r-sm);border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;}
+    .tb-new{height:26px;padding:0 10px;border-radius:var(--r-sm);border:none;background:var(--blue);color:white;font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;}
 
-    /* ===== FORM SUBMIT ===== */
-    [data-testid="stFormSubmitButton"] > button { background: #2563eb !important; color: white !important; border: none !important; border-radius: 10px !important; font-weight: 600 !important; }
+    /* Context strip */
+    .context-strip{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+    .ctx-tag{display:inline-flex;flex-direction:column;padding:4px 9px;border-radius:var(--r-sm);border:1px solid;}
+    .ctx-tag-l{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;opacity:0.45;margin-bottom:1px;}
+    .ctx-tag-v{font-size:11px;font-weight:600;}
+    .ctx-blue {background:rgba(76,142,255,0.06);border-color:rgba(76,142,255,0.16);color:#6ba3ff;}
+    .ctx-vi   {background:rgba(124,106,247,0.06);border-color:rgba(124,106,247,0.16);color:#9d8fff;}
+    .ctx-green{background:rgba(0,194,122,0.06);border-color:rgba(0,194,122,0.16);color:#00d488;}
+    .ctx-amber{background:rgba(245,166,35,0.06);border-color:rgba(245,166,35,0.16);color:#f7b84b;}
+    .ctx-red  {background:rgba(240,69,90,0.06);border-color:rgba(240,69,90,0.16);color:#f0455a;}
+    .ctx-muted{background:rgba(255,255,255,0.02);border-color:var(--b1);color:var(--t2);}
 
-    /* ===== CUSTOM COMPONENTS ===== */
+    /* Alert banner */
+    .alert-banner{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:var(--r-sm);background:rgba(76,142,255,0.04);border:1px solid rgba(76,142,255,0.12);font-size:11px;color:#6ba3ff;line-height:1.4;margin-bottom:12px;}
 
-    /* Breadcrumb */
-    .vc-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.82em; color: #475569; margin-bottom: 0.5rem; }
-    .vc-breadcrumb .sep { color: #2a3550; }
-    .vc-breadcrumb .crumb { color: #475569; cursor: pointer; }
-    .vc-breadcrumb .crumb:hover { color: #94a3b8; }
-    .vc-breadcrumb .current { color: #e2e8f0; font-weight: 600; }
+    /* Card */
+    .card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;}
+    .card-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--b0);}
+    .card-h-title{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t3);}
+    .card-h-right{font-size:10px;color:var(--t4);}
+    .card-h-action{font-size:10px;color:var(--blue);cursor:pointer;font-weight:500;}
+    .card-b{padding:14px;}
 
-    /* Decision badges */
-    .badge-watch { display: inline-flex; align-items: center; gap: 6px; background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
-    .badge-proceed { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
-    .badge-pass { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.25); padding: 4px 12px; border-radius: 999px; font-size: 0.78em; font-weight: 700; letter-spacing: 0.06em; }
+    /* Decision card */
+    .dec-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;}
+    .dec-accent{height:1px;}
+    .dec-watch-a {background:linear-gradient(90deg,transparent,rgba(245,166,35,0.6) 30%,rgba(245,166,35,0.2) 70%,transparent);}
+    .dec-proceed-a{background:linear-gradient(90deg,transparent,rgba(0,194,122,0.6) 30%,rgba(0,194,122,0.2) 70%,transparent);}
+    .dec-pass-a  {background:linear-gradient(90deg,transparent,rgba(240,69,90,0.6) 30%,rgba(240,69,90,0.2) 70%,transparent);}
+    .dec-body{padding:16px;}
+    .dec-eyebrow{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t3);margin-bottom:12px;}
+    .dec-verdict{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
+    .dec-pip{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block;}
+    .dec-word{font-size:20px;font-weight:700;letter-spacing:-0.03em;}
+    .dec-prob-num{font-size:52px;font-weight:800;font-family:var(--mono);letter-spacing:-0.05em;line-height:1;display:inline;}
+    .dec-prob-unit{font-size:22px;font-weight:500;font-family:var(--mono);color:var(--t3);}
+    .dec-prob-label{font-size:10px;color:var(--t3);margin-top:3px;}
+    .dec-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--b0);margin-top:14px;}
+    .dec-foot-l{font-size:10px;color:var(--t3);}
+    .dec-foot-v{font-size:12px;font-weight:600;font-family:var(--mono);color:var(--t2);}
 
-    /* Deal pills */
-    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.1rem; }
-    .pill { display: flex; flex-direction: column; background: #131929; border: 1px solid #1e2a40; border-radius: 10px; padding: 7px 13px; min-width: 90px; }
-    .pill-lbl { font-size: 0.6em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 3px; }
-    .pill-val { font-size: 0.88em; font-weight: 600; color: #e2e8f0; }
-    .pv-green { color: #34d399; } .pv-orange { color: #fbbf24; } .pv-red { color: #f87171; } .pv-blue { color: #60a5fa; } .pv-purple { color: #a78bfa; }
+    /* KPI card */
+    .kpi{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px 16px;display:flex;flex-direction:column;margin-bottom:12px;min-height:148px;}
+    .kpi-eye{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t3);margin-bottom:8px;}
+    .kpi-num{font-size:28px;font-weight:700;font-family:var(--mono);letter-spacing:-0.04em;line-height:1;margin-bottom:4px;}
+    .kpi-denom{font-size:14px;font-weight:400;color:var(--t3);}
+    .kpi-caption{font-size:10px;color:var(--t3);flex:1;}
+    .kpi-track{height:2px;background:var(--s5);border-radius:1px;overflow:hidden;margin-top:12px;}
+    .kpi-fill{height:100%;border-radius:1px;}
 
-    /* Dark card */
-    .vc-card { background: #131929; border: 1px solid #1e2a40; border-radius: 16px; padding: 1.4rem; margin-bottom: 1rem; }
-    .vc-card-title { font-size: 0.68em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 1rem; }
+    /* Score breakdown */
+    .sc-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--b0);}
+    .sc-item:first-child{padding-top:0;}
+    .sc-item:last-child{border-bottom:none;padding-bottom:0;}
+    .sc-name{font-size:11px;font-weight:500;color:var(--t2);width:82px;flex-shrink:0;}
+    .sc-track{flex:1;height:3px;background:var(--s4);border-radius:2px;overflow:hidden;}
+    .sc-fill{height:100%;border-radius:2px;}
+    .sc-val{font-size:11px;font-weight:600;font-family:var(--mono);width:22px;text-align:right;flex-shrink:0;}
 
-    /* Personalization notice */
-    .pers-notice { background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2); border-radius: 11px; padding: 11px 15px; margin-bottom: 1.1rem; display: flex; align-items: flex-start; gap: 10px; font-size: 0.845em; color: #93c5fd; line-height: 1.5; }
-    .pers-notice strong { color: #e2e8f0; }
+    /* Drivers */
+    .drv-group-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--t4);margin:10px 0 6px;}
+    .drv-group-label:first-child{margin-top:0;}
+    .drv{display:flex;align-items:flex-start;gap:8px;padding:8px 9px;border-radius:var(--r-sm);margin-bottom:4px;}
+    .drv-ico{width:15px;height:15px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0;margin-top:1px;}
+    .drv-pos{background:rgba(0,194,122,0.06);}
+    .drv-pos .drv-ico{background:rgba(0,194,122,0.15);color:var(--green);}
+    .drv-neg{background:rgba(245,166,35,0.05);}
+    .drv-neg .drv-ico{background:rgba(245,166,35,0.15);color:var(--amber);}
+    .drv-body{flex:1;min-width:0;}
+    .drv-title{font-size:11px;font-weight:600;color:var(--t1);line-height:1.3;}
+    .drv-desc{font-size:10px;color:var(--t3);margin-top:1px;line-height:1.4;}
+    .drv-impact{font-size:10px;font-family:var(--mono);font-weight:600;flex-shrink:0;padding-top:1px;}
 
-    /* Big score display */
-    .big-score { display: flex; align-items: baseline; gap: 3px; margin-bottom: 4px; line-height: 1; }
-    .bs-num { font-size: 2.6em; font-weight: 800; letter-spacing: -0.04em; }
-    .bs-pct { font-size: 1.8em; font-weight: 800; letter-spacing: -0.04em; }
-    .bs-denom { font-size: 1em; color: #3a4a65; font-weight: 500; }
-    .bs-sub { font-size: 0.78em; color: #475569; margin-bottom: 1rem; }
+    /* Override flags */
+    .flag{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--b0);}
+    .flag:last-child{border-bottom:none;}
+    .flag-box{width:13px;height:13px;border-radius:3px;border:1px solid var(--b2);background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;flex-shrink:0;}
+    .flag-box.on{background:rgba(76,142,255,0.15);border-color:rgba(76,142,255,0.35);color:var(--blue);}
+    .flag-label{font-size:11px;color:var(--t2);flex:1;}
+    .flag-val{font-size:10px;font-family:var(--mono);font-weight:600;}
 
-    /* Thin progress bar */
-    .bar-track { background: #1e2a40; height: 4px; border-radius: 999px; overflow: hidden; flex: 1; }
-    .bar-fill { height: 100%; border-radius: 999px; }
-    .score-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
-    .sbl { font-size: 0.82em; color: #64748b; min-width: 78px; flex-shrink: 0; }
-    .sbv { font-size: 0.82em; font-weight: 700; min-width: 26px; text-align: right; flex-shrink: 0; }
+    /* Metric pills */
+    .mp-grid{display:flex;flex-wrap:wrap;gap:4px;}
+    .mp{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:4px;font-size:10px;font-weight:500;}
+    .mp-m{background:rgba(245,166,35,0.07);color:var(--amber);border:1px solid rgba(245,166,35,0.15);}
+    .mp-h{background:rgba(0,194,122,0.07);color:var(--green);border:1px solid rgba(0,194,122,0.15);}
 
-    /* Signal items */
-    .signal { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 9px; margin-bottom: 7px; }
-    .sig-pos { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.14); }
-    .sig-neg { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.14); }
-    .sig-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.68em; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-    .si-up { background: rgba(16,185,129,0.18); color: #34d399; }
-    .si-dn { background: rgba(239,68,68,0.18); color: #f87171; }
-    .sig-body { flex: 1; }
-    .sig-title { font-size: 0.875em; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
-    .sig-desc { font-size: 0.775em; color: #475569; line-height: 1.4; }
-    .sig-delta { font-size: 0.78em; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-    .sd-pos { color: #34d399; } .sd-neg { color: #f87171; }
-
-    /* Deal info panel */
-    .di-row { display: flex; justify-content: space-between; align-items: baseline; padding: 9px 0; border-bottom: 1px solid #141c2e; }
-    .di-row:last-child { border-bottom: none; }
-    .di-lbl { font-size: 0.82em; color: #3a4a65; }
-    .di-val { font-size: 0.875em; font-weight: 600; color: #e2e8f0; text-align: right; max-width: 60%; }
-
-    /* Benchmark */
-    .bench-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #141c2e; font-size: 0.82em; }
-    .bench-row:last-child { border-bottom: none; }
-    .bl { color: #475569; } .bv { font-weight: 700; color: #e2e8f0; } .ba { color: #334155; font-size: 0.9em; }
-
-    /* Urgency banner */
-    .urgency { display: flex; align-items: center; gap: 9px; border-radius: 10px; padding: 10px 14px; margin-bottom: 0.9rem; font-size: 0.84em; font-weight: 500; }
-
-    /* Section labels */
-    .sec-lbl { font-size: 0.68em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #3a4a65; margin-bottom: 0.75rem; margin-top: 0.5rem; }
+    /* Generate buttons */
+    .gen{width:100%;padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--b1);background:var(--s2);color:var(--t2);font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;transition:all 0.1s;display:flex;align-items:center;gap:8px;text-align:left;margin-bottom:4px;}
+    .gen:hover{border-color:var(--b3);background:var(--s3);color:var(--t1);}
+    .gen-icon{width:19px;height:19px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;}
+    .recalc-btn{margin-top:10px;width:100%;padding:7px;border-radius:var(--r-sm);background:var(--blue);border:none;color:white;font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;}
 
     /* Pipeline sidebar */
-    .pl-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 1rem; }
-    .pl-metric { background: #131929; border: 1px solid #1e2a40; border-radius: 10px; padding: 10px; text-align: center; }
-    .pl-num { font-size: 1.5em; font-weight: 800; color: #e2e8f0; line-height: 1; }
-    .pl-lbl { font-size: 0.65em; color: #3a4a65; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.07em; }
+    .pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px;}
+    .pl-cell{padding:7px 9px;border-radius:var(--r-sm);border:1px solid var(--b0);background:var(--s1);cursor:pointer;transition:all 0.1s;}
+    .pl-cell.sel{background:rgba(76,142,255,0.06);border-color:rgba(76,142,255,0.2);}
+    .pl-num{font-size:17px;font-weight:700;font-family:var(--mono);line-height:1;margin-bottom:2px;}
+    .pl-lbl{font-size:9.5px;color:var(--t3);font-weight:500;}
 
-    /* Nav tab row */
-    .tab-row { display: flex; border-bottom: 1px solid #1e2a40; margin-bottom: 1.5rem; gap: 2px; }
+    /* Deal cards */
+    .deal-card{padding:9px 10px;border-radius:var(--r-sm);border:1px solid transparent;margin-bottom:2px;}
+    .deal-card.sel{background:var(--s3);border-color:var(--b2);}
+    .dc-row{display:flex;align-items:center;justify-content:space-between;}
+    .dc-name{font-size:12px;font-weight:600;color:var(--t1);}
+    .dc-prob{font-size:11px;font-weight:600;font-family:var(--mono);}
+    .dc-sub{font-size:10px;color:var(--t3);margin:2px 0 5px;}
+    .dc-bar{height:2px;background:var(--s5);border-radius:1px;overflow:hidden;}
+    .dc-fill{height:100%;border-radius:1px;}
 
-    /* Main title */
-    .main-title { font-size: 1.5em; font-weight: 700; color: #f1f5f9; letter-spacing: -0.025em; }
-    .subtitle { font-size: 0.85em; color: #475569; font-weight: 400; }
+    /* Right panel */
+    .rp-section{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-lg);padding:14px;margin-bottom:10px;}
+    .rp-section-title{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t3);margin-bottom:10px;}
+    .rp-row{display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--b0);}
+    .rp-row:last-child{border-bottom:none;}
+    .rp-row-label{font-size:10px;color:var(--t3);font-weight:500;}
+    .rp-row-val{font-size:11px;font-weight:600;font-family:var(--mono);text-align:right;max-width:140px;word-break:break-word;}
 
-    /* Form sections */
-    .form-section { background: #131929; border-radius: 14px; padding: 1.5rem; border: 1px solid #1e2a40; margin-bottom: 1.5rem; }
-    .form-section-title { font-size: 1em; font-weight: 600; color: #e2e8f0; margin-bottom: 1.25rem; }
-    .form-label { font-size: 0.9em; font-weight: 500; color: #94a3b8; margin-bottom: 0.4rem; }
-    .form-hint { font-size: 0.8em; color: #475569; }
+    /* Cop chips */
+    .cop-chip{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r-sm);border:1px solid var(--b0);background:var(--s1);font-size:11px;color:var(--t2);cursor:pointer;transition:all 0.1s;margin-bottom:4px;font-weight:500;}
+    .cop-chip:hover{border-color:var(--b2);background:var(--s2);color:var(--t1);}
 
-    /* Extraction preview */
-    .extraction-preview { background: #0d1424; border: 1px solid #1e2a40; border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem; font-family: 'Monaco', 'Courier New', monospace; font-size: 0.82em; max-height: 280px; overflow-y: auto; color: #64748b; }
+    /* Benchmarks */
+    .bench-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--b0);font-size:11px;}
+    .bench-row:last-child{border-bottom:none;}
+    .bl{color:var(--t3);} .bv{font-weight:700;} .ba{color:var(--t4);font-size:10px;}
 
-    /* Status badges */
-    .status-ready { display: inline-block; background: rgba(16,185,129,0.12); color: #34d399; padding: 3px 10px; border-radius: 6px; font-size: 0.72em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid rgba(16,185,129,0.2); }
-    .status-pending { display: inline-block; background: rgba(245,158,11,0.12); color: #fbbf24; padding: 3px 10px; border-radius: 6px; font-size: 0.72em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; border: 1px solid rgba(245,158,11,0.2); }
+    /* Urgency */
+    .urgency-banner{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:var(--r-sm);font-size:11px;font-weight:500;margin-bottom:12px;}
 
-    /* Info/warning boxes */
-    .info-box { background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2); border-radius: 11px; padding: 1rem; margin-bottom: 1.25rem; color: #93c5fd; font-size: 0.9em; }
-    .warning-box { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.2); border-radius: 11px; padding: 1rem; margin-bottom: 1.25rem; color: #fbbf24; font-size: 0.9em; }
+    /* Personalization notice */
+    .pers-notice{display:flex;align-items:flex-start;gap:7px;padding:7px 11px;border-radius:var(--r-sm);background:rgba(124,106,247,0.05);border:1px solid rgba(124,106,247,0.15);font-size:11px;color:#9d8fff;margin-bottom:10px;line-height:1.4;}
 
-    /* Driver cards (legacy) */
-    .driver-positive { background: rgba(16,185,129,0.07); border-left: 3px solid #10b981; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
-    .driver-negative { background: rgba(245,158,11,0.07); border-left: 3px solid #f59e0b; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
-    .driver-flag { background: rgba(239,68,68,0.07); border-left: 3px solid #ef4444; padding: 0.9rem; border-radius: 8px; margin: 0.4rem 0; }
-
-    /* Column fix */
-    .stColumn > div > div { width: 100%; }
-
-    /* Scrollbar dark */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0b0f1a; }
-    ::-webkit-scrollbar-thumb { background: #2a3550; border-radius: 3px; }
+    /* Misc */
+    .sec-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--t4);margin-bottom:8px;margin-top:4px;}
+    .c-green{color:var(--green)!important;} .c-amber{color:var(--amber)!important;}
+    .c-red{color:var(--red)!important;}     .c-blue{color:var(--blue)!important;}
+    .c-dim{color:var(--t3)!important;}      .c-t2{color:var(--t2)!important;}
+    .ff-mono{font-family:var(--mono)!important;}
 
     </style>
 """, unsafe_allow_html=True)
@@ -263,7 +295,8 @@ st.markdown("""
 # ========================================
 
 # Persistent user database using JSON file
-USERS_DB_FILE = "/workspaces/document-qa/users_db.json"
+import os as _os
+USERS_DB_FILE = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "users_db.json")
 
 def load_users_db():
     """Load users database from file."""
@@ -346,16 +379,16 @@ if "deal_filters" not in st.session_state:
 if "active_content" not in st.session_state:
     st.session_state.active_content = None
 
-# Auto-login check using query params
+# Auto-login check using query params (runs once per session)
 if not st.session_state.auto_login_checked:
     st.session_state.auto_login_checked = True
-    # Check if user param exists in URL
     query_params = st.query_params
     if "user" in query_params:
         username = query_params["user"]
         if username in st.session_state.users_db:
             st.session_state.current_user = username
             st.session_state.logged_in = True
+            st.session_state.login_error = None
             st.session_state.investor_prefs = st.session_state.users_db[username].get("investor_prefs")
             st.session_state.saved_deals = st.session_state.users_db[username].get("saved_deals", [])
 
@@ -428,9 +461,18 @@ def login_user(username: str, password: str) -> bool:
     return False
 
 def auto_login_from_cookie() -> bool:
-    """Try to auto-login from stored username."""
-    # This would check localStorage in a real implementation
-    # For now, just return False
+    """Try to auto-login from URL query param."""
+    query_params = st.query_params
+    if "user" in query_params:
+        username = query_params["user"]
+        if username in st.session_state.users_db:
+            st.session_state.current_user = username
+            st.session_state.logged_in = True
+            st.session_state.login_error = None
+            st.session_state.investor_prefs = st.session_state.users_db[username].get("investor_prefs")
+            st.session_state.saved_deals = st.session_state.users_db[username].get("saved_deals", [])
+            _rebuild_deals_by_status()
+            return True
     return False
 
 def signup_user(username: str, password: str) -> bool:
@@ -456,6 +498,15 @@ def signup_user(username: str, password: str) -> bool:
     st.query_params["user"] = username
     set_login_cookie(username)
     return True
+
+def _rebuild_deals_by_status():
+    """Rebuild deals_by_status from saved_deals."""
+    dbs = {"watchlist": [], "active": [], "reviewed": [], "passed": []}
+    for d in st.session_state.saved_deals:
+        s = d.get("status", "watchlist")
+        if s in dbs:
+            dbs[s].append(d)
+    st.session_state.deals_by_status = dbs
 
 def logout_user():
     """Logout current user."""
@@ -1213,41 +1264,68 @@ def get_progress_status():
     return docs_uploaded, fields_filled, analysis_ready
 
 # ========================================
-# MAIN PAGE HEADER
+# MAIN PAGE HEADER (topbar)
 # ========================================
-col_title, col_actions = st.columns([1, 0.35])
-with col_title:
-    # Breadcrumb
-    _company_bc = st.session_state.get("company") or "New Deal"
-    _list_bc = st.session_state.get("active_list", "active").capitalize()
-    # Show analysis badge if result exists
-    _badge_html = ""
-    if st.session_state.get("last_result"):
-        _r = st.session_state.last_result
-        _p = _r.get("prob_next_round", 0)
-        _dec_raw, _ = get_investment_decision(_p)
-        _badge_cls = {"Proceed": "badge-proceed", "Watch": "badge-watch", "Pass": "badge-pass"}.get(_dec_raw, "badge-watch")
-        _badge_html = f'<span class="{_badge_cls}" style="margin-left:12px;">● {_dec_raw.upper()} · {_p:.0%}</span>'
-    st.markdown(f"""
-    <div class="vc-breadcrumb">
-        <span class="crumb">Deals</span>
-        <span class="sep">/</span>
-        <span class="crumb">{_list_bc}</span>
-        <span class="sep">/</span>
-        <span class="current">{_company_bc}</span>
-        {_badge_html}
-    </div>
-    """, unsafe_allow_html=True)
+_company_bc = st.session_state.get("company") or "New Deal"
+_list_bc = st.session_state.get("active_list", "active").capitalize()
 
-with col_actions:
-    col_exp, col_reset = st.columns(2)
-    with col_exp:
-        if st.button("↓ Export", use_container_width=True, help="Export deal data"):
-            st.toast("Export coming soon!")
-    with col_reset:
-        if st.button("+ New Deal", use_container_width=True, type="primary", help="Clear all fields and start fresh"):
-            reset_deal()
-            st.rerun()
+# Build status chip
+_chip_html = ""
+if st.session_state.get("last_result"):
+    _r = st.session_state.last_result
+    _p = _r.get("prob_next_round", 0)
+    _dec_raw, _ = get_investment_decision(_p)
+    _chip_cls = {"Proceed": "sc-proceed", "Watch": "sc-watch", "Pass": "sc-pass"}.get(_dec_raw, "sc-watch")
+    _pip_col = {"Proceed": "var(--green)", "Watch": "var(--amber)", "Pass": "var(--red)"}.get(_dec_raw, "var(--amber)")
+    _chip_html = f'<span class="status-chip {_chip_cls}"><span class="sc-pip" style="background:{_pip_col};"></span>{_dec_raw} · {_p:.0%}</span>'
+
+_t = st.session_state.active_tab
+_tab_html = "".join([
+    f'<span class="tb-btn{"  active" if _t==_n else ""}">{_n}</span>'
+    for _n in ["Intake", "Analysis", "Copilot"]
+])
+
+st.markdown(f"""
+<div class="vc-topbar">
+  <div class="vc-bc">
+    <span class="vc-bc-crumb">Deals</span>
+    <span class="vc-bc-sep">/</span>
+    <span class="vc-bc-crumb">{_list_bc}</span>
+    <span class="vc-bc-sep">/</span>
+    <span class="vc-bc-active">{_company_bc}</span>
+  </div>
+  {_chip_html}
+  <div style="margin-left:12px;display:flex;gap:3px;">{_tab_html}</div>
+  <div class="vc-tb-right">
+    <span class="vc-tb-div"></span>
+    <button class="tb-export" onclick="">↓ Export</button>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+# Real tab + action buttons (functional Streamlit)
+_tb_c1, _tb_c2, _tb_c3, _sp, _exp_c, _new_c = st.columns([1,1,1,4,1,1])
+with _tb_c1:
+    if st.button("Intake", use_container_width=True,
+                 type="primary" if _t == "Intake" else "secondary", key="tab_intake"):
+        scroll_to_top(); st.session_state.active_tab = "Intake"; st.rerun()
+with _tb_c2:
+    if st.button("Analysis", use_container_width=True,
+                 type="primary" if _t == "Analysis" else "secondary", key="tab_analysis"):
+        scroll_to_top(); st.session_state.active_tab = "Analysis"; st.rerun()
+with _tb_c3:
+    if st.button("Copilot", use_container_width=True,
+                 type="primary" if _t == "Copilot" else "secondary", key="tab_copilot"):
+        scroll_to_top(); st.session_state.active_tab = "Copilot"; st.rerun()
+with _exp_c:
+    if st.button("↓ Export", use_container_width=True):
+        st.toast("Export coming soon!")
+with _new_c:
+    if st.button("+ New Deal", use_container_width=True, type="primary"):
+        reset_deal()
+        st.rerun()
+
+st.markdown('<div style="border-bottom:1px solid var(--b0);margin:4px 0 14px;"></div>', unsafe_allow_html=True)
 
 # ========================================
 # SIDEBAR: AUTHENTICATION & INVESTOR PROFILE
@@ -1255,72 +1333,75 @@ with col_actions:
 with st.sidebar:
     # Brand header
     st.markdown("""
-    <div style="padding:0.5rem 0 1.25rem;">
-        <div style="font-size:1.1em;font-weight:800;color:#f1f5f9;letter-spacing:-0.02em;">VCaaS</div>
-        <div style="font-size:0.72em;color:#3a4a65;margin-top:2px;">Deal Intake & Analysis</div>
+    <div style="padding:12px 14px 10px;border-bottom:1px solid var(--b0);">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+                <rect x="1" y="1" width="10" height="10" rx="2.5" fill="#4c8eff" opacity="0.9"/>
+                <rect x="15" y="1" width="10" height="10" rx="2.5" fill="#7c6af7" opacity="0.7"/>
+                <rect x="1" y="15" width="10" height="10" rx="2.5" fill="#7c6af7" opacity="0.7"/>
+                <rect x="15" y="15" width="10" height="10" rx="2.5" fill="#4c8eff" opacity="0.4"/>
+            </svg>
+            <div>
+                <div style="font-size:13px;font-weight:800;color:var(--t1);letter-spacing:-0.02em;line-height:1;">VCaaS</div>
+                <div style="font-size:9.5px;color:var(--t4);margin-top:1px;">Deal Intelligence</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     # Authentication section
     if not st.session_state.logged_in:
-        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Sign In</div>', unsafe_allow_html=True)
-        
-        auth_tab = st.radio("", ["Login", "Create Account"], horizontal=True, label_visibility="collapsed")
-        
-        username_input = st.text_input("Username", key="auth_username")
-        password_input = st.text_input("Password", type="password", key="auth_password")
-        
-        # Show error only if it was set by a button click
-        if st.session_state.login_error:
-            st.error(st.session_state.login_error)
-        
-        if auth_tab == "Login":
-            if st.button("🔓 Login", use_container_width=True, type="primary"):
-                if username_input and password_input:
-                    if login_user(username_input, password_input):
-                        st.success(f"Welcome back, {username_input}!")
-                        st.rerun()
+        st.markdown('<div style="padding:10px 14px 0;"><div class="sec-lbl">Sign In</div></div>', unsafe_allow_html=True)
+        with st.container():
+            st.markdown('<div style="padding:0 14px;">', unsafe_allow_html=True)
+            auth_tab = st.radio("", ["Login", "Create Account"], horizontal=True, label_visibility="collapsed")
+            username_input = st.text_input("Username", key="auth_username", placeholder="your username")
+            password_input = st.text_input("Password", type="password", key="auth_password", placeholder="••••••••")
+            if st.session_state.login_error:
+                st.error(st.session_state.login_error)
+            if auth_tab == "Login":
+                if st.button("Login", use_container_width=True, type="primary"):
+                    if username_input and password_input:
+                        if login_user(username_input, password_input):
+                            st.rerun()
+                        else:
+                            st.session_state.login_error = "Invalid username or password"
+                            st.rerun()
                     else:
-                        st.session_state.login_error = "Invalid username or password"
+                        st.session_state.login_error = "Please enter username and password"
                         st.rerun()
-                else:
-                    st.session_state.login_error = "Please enter username and password"
-                    st.rerun()
-        else:
-            if st.button("✨ Create Account", use_container_width=True, type="primary"):
-                if username_input and password_input:
-                    if signup_user(username_input, password_input):
-                        st.success(f"Account created! Welcome, {username_input}!")
-                        st.rerun()
+            else:
+                if st.button("Create Account", use_container_width=True, type="primary"):
+                    if username_input and password_input:
+                        if signup_user(username_input, password_input):
+                            st.rerun()
+                        else:
+                            st.session_state.login_error = "Username already exists"
+                            st.rerun()
                     else:
-                        st.session_state.login_error = "Username already exists"
+                        st.session_state.login_error = "Please provide username and password"
                         st.rerun()
-                else:
-                    st.session_state.login_error = "Please provide username and password"
-                    st.rerun()
-        
-        st.divider()
-        st.caption("Your preferences and history will be saved to your account")
-        st.caption("💡 Tip: Stay logged in across page reloads")
-    
+            st.markdown('</div>', unsafe_allow_html=True)
+
     else:
-        # User is logged in
+        # User is logged in — show avatar + logout
         _uname = st.session_state.current_user
         _initials = _uname[:2].upper()
         col_usr, col_out = st.columns([3, 1])
         with col_usr:
             st.markdown(f"""
-            <div style="display:flex;align-items:center;gap:9px;padding:0.4rem 0;">
-                <div style="width:30px;height:30px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;font-size:0.72em;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
-                <span style="font-size:0.88em;font-weight:600;color:#e2e8f0;">{_uname}</span>
+            <div style="display:flex;align-items:center;gap:9px;padding:10px 14px 8px;">
+                <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
+                <span style="font-size:12px;font-weight:600;color:var(--t1);">{_uname}</span>
             </div>
             """, unsafe_allow_html=True)
         with col_out:
+            st.markdown('<div style="padding-top:10px;">', unsafe_allow_html=True)
             if st.button("Out", key="logout_btn", help="Logout"):
                 logout_user()
                 st.rerun()
-
-        st.markdown('<div style="border-top:1px solid #1a2540;margin:0.75rem 0;"></div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div style="border-top:1px solid var(--b0);margin:0 0 0;"></div>', unsafe_allow_html=True)
 
     # Investor Profile section (only shown when logged in)
     if st.session_state.logged_in:
@@ -1419,32 +1500,45 @@ with st.sidebar:
     if st.session_state.logged_in:
         st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Pipeline</div>', unsafe_allow_html=True)
 
-        # Counts
+        # Pipeline counts
         wl_n = len([d for d in st.session_state.saved_deals if d.get("status") == "watchlist"])
         ac_n = len([d for d in st.session_state.saved_deals if d.get("status") == "active"])
         rv_n = len([d for d in st.session_state.saved_deals if d.get("status") == "reviewed"])
         ps_n = len([d for d in st.session_state.saved_deals if d.get("status") == "passed"])
+        _sel = st.session_state.active_list
 
-        # 2x2 metric grid
         st.markdown(f"""
-        <div class="pl-metrics">
-            <div class="pl-metric"><div class="pl-num">{wl_n}</div><div class="pl-lbl">Watchlist</div></div>
-            <div class="pl-metric"><div class="pl-num" style="color:#60a5fa;">{ac_n}</div><div class="pl-lbl">Active</div></div>
-            <div class="pl-metric"><div class="pl-num">{rv_n}</div><div class="pl-lbl">Reviewed</div></div>
-            <div class="pl-metric"><div class="pl-num" style="color:#475569;">{ps_n}</div><div class="pl-lbl">Passed</div></div>
+        <div style="padding:10px 12px 8px;">
+          <div class="sec-lbl">Pipeline</div>
+          <div class="pl-grid">
+            <div class="pl-cell {'sel' if _sel=='watchlist' else ''}">
+              <div class="pl-num {'c-dim' if wl_n==0 else ''}">{wl_n}</div>
+              <div class="pl-lbl">📌 Watchlist</div>
+            </div>
+            <div class="pl-cell {'sel' if _sel=='active' else ''}">
+              <div class="pl-num {'c-amber' if ac_n>0 else 'c-dim'}">{ac_n}</div>
+              <div class="pl-lbl">⚡ Active</div>
+            </div>
+            <div class="pl-cell {'sel' if _sel=='reviewed' else ''}">
+              <div class="pl-num {'c-blue' if rv_n>0 else 'c-dim'}">{rv_n}</div>
+              <div class="pl-lbl">📋 Reviewed</div>
+            </div>
+            <div class="pl-cell {'sel' if _sel=='passed' else ''}">
+              <div class="pl-num c-dim">{ps_n}</div>
+              <div class="pl-lbl">✕ Passed</div>
+            </div>
+          </div>
         </div>
         """, unsafe_allow_html=True)
 
-        # List selector
-        list_tabs = st.segmented_control(
-            "Select List",
-            options=["watchlist", "active", "reviewed", "passed"],
-            format_func=lambda x: {"watchlist": "Watch", "active": "Active", "reviewed": "Review", "passed": "Pass"}[x],
-            default=st.session_state.active_list,
-            label_visibility="collapsed"
-        )
-        if list_tabs:
-            st.session_state.active_list = list_tabs
+        # List selector buttons
+        _lc1, _lc2, _lc3, _lc4 = st.columns(4)
+        for _col, _lst, _lbl in [(_lc1,"watchlist","Watch"),(_lc2,"active","Active"),(_lc3,"reviewed","Review"),(_lc4,"passed","Pass")]:
+            with _col:
+                if st.button(_lbl, key=f"lst_{_lst}", use_container_width=True,
+                             type="primary" if st.session_state.active_list == _lst else "secondary"):
+                    st.session_state.active_list = _lst
+                    st.rerun()
 
         # Search
         search_filter = st.text_input(
@@ -1456,116 +1550,54 @@ with st.sidebar:
         )
         st.session_state.deal_filters["search"] = search_filter
 
-        # Filters expander
-        with st.expander("Filters", expanded=False):
-            all_stages = ["Pre-Seed", "Seed", "Series A", "Series B+"]
-            stage_filter = st.multiselect("Stage", options=all_stages, default=st.session_state.deal_filters["stages"])
-            st.session_state.deal_filters["stages"] = stage_filter
-
-            all_sectors = list(set([d.get("sector") for d in st.session_state.saved_deals if d.get("sector")]))
-            sector_filter = st.multiselect("Sector", options=sorted(all_sectors), default=[s for s in st.session_state.deal_filters["sectors"] if s in all_sectors])
-            st.session_state.deal_filters["sectors"] = sector_filter
-
-            decision_filter = st.multiselect("Decision", options=["Proceed", "Watch", "Pass"], default=st.session_state.deal_filters["decisions"])
-            st.session_state.deal_filters["decisions"] = decision_filter
-
-            sort_filter = st.selectbox("Sort", options=["last_updated", "probability", "arr"],
-                format_func=lambda x: {"last_updated": "Last Updated", "probability": "Probability ↓", "arr": "ARR ↓"}[x],
-                index=["last_updated", "probability", "arr"].index(st.session_state.deal_filters["sort_by"]))
-            st.session_state.deal_filters["sort_by"] = sort_filter
-
-            if st.button("Reset Filters", use_container_width=True):
-                st.session_state.deal_filters = {"stages": [], "sectors": [], "decisions": [], "min_arr": 0, "search": "", "sort_by": "last_updated"}
-                st.rerun()
-
-        st.markdown('<div style="border-top:1px solid #1a2540;margin:0.75rem 0;"></div>', unsafe_allow_html=True)
-
         # Deal list
         filtered_deals = get_filtered_deals(st.session_state.active_list)
-        st.markdown(f'<div style="font-size:0.72em;color:#3a4a65;margin-bottom:0.5rem;">{len(filtered_deals)} deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="padding:6px 14px 4px;font-size:9.5px;font-weight:600;color:var(--t4);text-transform:uppercase;letter-spacing:0.08em;">{len(filtered_deals)} in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
 
         if filtered_deals:
             for _deal in filtered_deals[:20]:
-                _dc = {"Proceed": "#10b981", "Watch": "#f59e0b", "Pass": "#ef4444"}.get(_deal.get("decision"), "#475569")
-                _pct = f"{_deal.get('prob_next_round', 0):.0%}"
+                _dc_col = {"Proceed": "var(--green)", "Watch": "var(--amber)", "Pass": "var(--red)"}.get(_deal.get("decision"), "var(--t3)")
+                _pct_raw = _deal.get('prob_next_round', 0)
+                _pct_str = f"{_pct_raw:.0%}"
+                _pct_w = f"{int(_pct_raw*100)}%"
                 _is_active = (_deal.get("company") == (st.session_state.get("company") or ""))
-                _border = "#3b82f6" if _is_active else "#1e2a40"
-                _bg = "rgba(59,130,246,0.06)" if _is_active else "#131929"
+                _sel_cls = "sel" if _is_active else ""
 
                 st.markdown(f"""
-                <div style="background:{_bg};border:1px solid {_border};border-radius:10px;padding:9px 11px;margin-bottom:5px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <span style="font-size:0.88em;font-weight:600;color:#e2e8f0;">{_deal['company']}</span>
-                        <span style="font-size:0.8em;font-weight:700;color:{_dc};">{_pct}</span>
+                <div class="deal-card {_sel_cls}" style="margin:0 8px 2px;">
+                    <div class="dc-row">
+                        <span class="dc-name">{_deal['company']}</span>
+                        <span class="dc-prob" style="color:{_dc_col};">{_pct_str}</span>
                     </div>
-                    <div style="font-size:0.72em;color:#3a4a65;margin-top:3px;">{_deal.get('stage','—')} · {_deal.get('sector','')[:22]}</div>
+                    <div class="dc-sub">{_deal.get('stage','—')} · {_deal.get('sector','')[:24]}</div>
+                    <div class="dc-bar"><div class="dc-fill" style="width:{_pct_w};background:{_dc_col};"></div></div>
                 </div>
                 """, unsafe_allow_html=True)
 
-                load_col, move_col = st.columns([3, 2])
-                with load_col:
+                _oc1, _oc2 = st.columns([3, 2])
+                with _oc1:
                     if st.button("Open →", key=f"load_{_deal['id']}", use_container_width=True):
                         load_deal(_deal)
                         st.session_state.active_tab = "Analysis"
                         st.toast(f"Loaded {_deal['company']}")
                         st.rerun()
-                with move_col:
-                    new_status = st.selectbox(
+                with _oc2:
+                    _new_s = st.selectbox(
                         "Move",
                         options=["watchlist", "active", "reviewed", "passed"],
                         index=["watchlist", "active", "reviewed", "passed"].index(_deal.get("status", "watchlist")),
-                        format_func=lambda x: {"watchlist": "📌", "active": "⚡", "reviewed": "📋", "passed": "❌"}[x],
+                        format_func=lambda x: {"watchlist": "📌", "active": "⚡", "reviewed": "📋", "passed": "✕"}[x],
                         key=f"status_{_deal['id']}",
                         label_visibility="collapsed"
                     )
-                    if new_status != _deal.get("status"):
-                        update_deal_status(_deal["id"], new_status)
+                    if _new_s != _deal.get("status"):
+                        update_deal_status(_deal["id"], _new_s)
                         st.rerun()
         else:
-            st.markdown(f'<div style="font-size:0.85em;color:#3a4a65;padding:1rem 0;text-align:center;">No deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="font-size:11px;color:var(--t4);padding:1rem 14px;text-align:center;">No deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
 
     elif st.session_state.logged_in:
-        st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;margin-bottom:0.75rem;">Pipeline</div>', unsafe_allow_html=True)
-        st.markdown('<div style="font-size:0.85em;color:#3a4a65;text-align:center;padding:1rem 0;">No saved deals yet. Run analysis and save your first deal!</div>', unsafe_allow_html=True)
-
-# ========================================
-# PROGRESS STEPPER + TABS (combined)
-# ========================================
-docs_up, fields_filled, analysis_done = get_progress_status()
-
-def _step(done, label):
-    color = "#10b981" if done else "#2a3550"
-    txt_color = "#34d399" if done else "#3a4a65"
-    tick = "✓" if done else "·"
-    return f'<span style="display:inline-flex;align-items:center;gap:6px;font-size:0.78em;color:{txt_color};font-weight:600;"><span style="width:16px;height:16px;border-radius:50%;background:{color}20;border:1.5px solid {color};display:inline-flex;align-items:center;justify-content:center;font-size:0.7em;">{tick}</span>{label}</span>'
-
-steps_html = f"""
-<div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
-    {_step(docs_up, "Docs Uploaded")}
-    <span style="color:#1e2a40;font-size:0.75em;">──</span>
-    {_step(bool(st.session_state.extracted), "Fields Extracted")}
-    <span style="color:#1e2a40;font-size:0.75em;">──</span>
-    {_step(fields_filled, "Fields Filled")}
-    <span style="color:#1e2a40;font-size:0.75em;">──</span>
-    {_step(analysis_done, "Analyzed")}
-</div>
-"""
-st.markdown(steps_html, unsafe_allow_html=True)
-
-# Tab navigation
-_t = st.session_state.active_tab
-tab_col1, tab_col2, tab_col3, spacer = st.columns([1, 1, 1, 4])
-with tab_col1:
-    if st.button("📥  Intake", use_container_width=True, type="primary" if _t == "Intake" else "secondary"):
-        scroll_to_top(); st.session_state.active_tab = "Intake"; st.rerun()
-with tab_col2:
-    if st.button("📊  Analysis", use_container_width=True, type="primary" if _t == "Analysis" else "secondary"):
-        scroll_to_top(); st.session_state.active_tab = "Analysis"; st.rerun()
-with tab_col3:
-    if st.button("💬  Copilot", use_container_width=True, type="primary" if _t == "Copilot" else "secondary"):
-        scroll_to_top(); st.session_state.active_tab = "Copilot"; st.rerun()
-
-st.markdown('<div style="border-bottom:1px solid #1e2a40;margin:0.5rem 0 1.5rem;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="padding:10px 12px 8px;"><div class="sec-lbl">Pipeline</div><div style="font-size:11px;color:var(--t4);padding:1rem 0;text-align:center;">Run analysis and save your first deal!</div></div>', unsafe_allow_html=True)
 
 # ========================================
 # TAB CONTENT
@@ -1573,12 +1605,18 @@ st.markdown('<div style="border-bottom:1px solid #1e2a40;margin:0.5rem 0 1.5rem;
 
 # Require login to access main content
 if not st.session_state.logged_in:
-    st.info("👈 Please login or create an account to access the deal analysis platform")
+    st.markdown("""
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 2rem;text-align:center;">
+        <div style="font-size:28px;margin-bottom:12px;">🔐</div>
+        <div style="font-size:14px;font-weight:600;color:var(--t1);margin-bottom:6px;">Sign in to access VCaaS</div>
+        <div style="font-size:12px;color:var(--t3);">Use the sidebar to login or create an account.</div>
+    </div>
+    """, unsafe_allow_html=True)
     st.stop()
 
 # Show content based on active_tab
 if st.session_state.active_tab == "Intake":
-    st.markdown('<div class="form-section-title">📄 Documents & Data</div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:12px;">Documents & Data</div>', unsafe_allow_html=True)
     
     # Document upload
     with st.form("doc_upload_form"):
@@ -1884,15 +1922,19 @@ elif st.session_state.active_tab == "Analysis":
         r_class = "pv-green" if runway >= 18 else "pv-orange" if runway >= 12 else "pv-red"
         stage_class = {"Pre-Seed": "pv-purple", "Seed": "pv-blue", "Series A": "pv-green", "Series B+": "pv-orange"}.get(deal.get("stage", ""), "pv-blue")
 
-        # ── DEAL PILLS ROW ─────────────────────────────────────────────
+        # ── CONTEXT STRIP ──────────────────────────────────────────────
+        _stage_ctx = "ctx-blue" if deal.get('stage','') in ("Seed","Pre-Seed") else "ctx-vi" if deal.get('stage','') == "Series A" else "ctx-green"
+        _arr_ctx = "ctx-green" if arr_val >= 500_000 else "ctx-amber" if arr_val >= 100_000 else "ctx-muted"
+        _run_ctx = "ctx-green" if runway >= 18 else "ctx-amber" if runway >= 12 else "ctx-red"
+        _growth_ctx = "ctx-green" if growth_pct > 10 else "ctx-amber" if growth_pct > 0 else "ctx-red"
         st.markdown(f"""
-        <div class="pills-row">
-            <div class="pill"><span class="pill-lbl">Stage</span><span class="pill-val {stage_class}">{deal.get('stage','—')}</span></div>
-            <div class="pill" style="min-width:160px;"><span class="pill-lbl">Sector</span><span class="pill-val" style="font-size:0.8em;">{deal.get('sector','—')}</span></div>
-            <div class="pill"><span class="pill-lbl">ARR</span><span class="pill-val pv-green">{arr_display}</span></div>
-            <div class="pill"><span class="pill-lbl">Raising</span><span class="pill-val pv-orange">{raise_display}</span></div>
-            <div class="pill"><span class="pill-lbl">Runway</span><span class="pill-val {r_class}">{runway} mo</span></div>
-            <div class="pill"><span class="pill-lbl">Growth</span><span class="pill-val {g_class}">{growth_pct:.0f}%</span></div>
+        <div class="context-strip">
+            <div class="ctx-tag {_stage_ctx}"><div class="ctx-tag-l">Stage</div><div class="ctx-tag-v">{deal.get('stage','—')}</div></div>
+            <div class="ctx-tag ctx-muted" style="max-width:180px;"><div class="ctx-tag-l">Sector</div><div class="ctx-tag-v" style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{deal.get('sector','—')}</div></div>
+            <div class="ctx-tag {_arr_ctx}"><div class="ctx-tag-l">ARR</div><div class="ctx-tag-v">{arr_display}</div></div>
+            <div class="ctx-tag ctx-amber"><div class="ctx-tag-l">Raising</div><div class="ctx-tag-v">{raise_display}</div></div>
+            <div class="ctx-tag {_run_ctx}"><div class="ctx-tag-l">Runway</div><div class="ctx-tag-v">{runway} mo</div></div>
+            <div class="ctx-tag {_growth_ctx}"><div class="ctx-tag-l">Growth</div><div class="ctx-tag-v">{growth_pct:.0f}%</div></div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -1913,18 +1955,26 @@ elif st.session_state.active_tab == "Analysis":
             # ── TOP 3 CARDS ─────────────────────────────────────────────
             c1, c2, c3 = st.columns(3)
 
+            _dec_accent = {"Proceed": "dec-proceed-a", "Watch": "dec-watch-a", "Pass": "dec-pass-a"}[decision]
+            _dec_pip_color = {"Proceed": "var(--green)", "Watch": "var(--amber)", "Pass": "var(--red)"}[decision]
             with c1:
                 st.markdown(f"""
-                <div class="vc-card">
-                    <div class="vc-card-title">Investment Decision</div>
-                    <div class="{d_badge}" style="margin-bottom:1.1rem;display:inline-flex;">● {decision.upper()}</div>
-                    <div class="big-score" style="margin-top:0.5rem;">
-                        <span class="bs-pct" style="color:{d_color};">{prob:.0%}</span>
-                    </div>
-                    <div class="bs-sub">next-round probability</div>
-                    <div style="border-top:1px solid #141c2e;margin-top:0.75rem;padding-top:0.75rem;display:flex;justify-content:space-between;align-items:center;">
-                        <span style="font-size:0.75em;color:#3a4a65;">Model confidence</span>
-                        <span style="font-size:0.82em;font-weight:700;color:#64748b;">{int(confidence*100)}%</span>
+                <div class="dec-card">
+                    <div class="dec-accent {_dec_accent}"></div>
+                    <div class="dec-body">
+                        <div class="dec-eyebrow">Investment Decision</div>
+                        <div class="dec-verdict">
+                            <span class="dec-pip" style="background:{_dec_pip_color};"></span>
+                            <span class="dec-word" style="color:{d_color};">{decision}</span>
+                        </div>
+                        <div>
+                            <span class="dec-prob-num" style="color:{d_color};">{int(prob*100)}</span><span class="dec-prob-unit">%</span>
+                        </div>
+                        <div class="dec-prob-label">next-round probability</div>
+                        <div class="dec-foot">
+                            <span class="dec-foot-l">Model confidence</span>
+                            <span class="dec-foot-v">{int(confidence*100)}%</span>
+                        </div>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -1932,31 +1982,21 @@ elif st.session_state.active_tab == "Analysis":
             with c2:
                 sector_note = "Sector outside thesis" if any("sector" in p.lower() for p in (personalization_applied or [])) else "Sector match"
                 st.markdown(f"""
-                <div class="vc-card">
-                    <div class="vc-card-title">Investor Fit</div>
-                    <div class="big-score">
-                        <span class="bs-num" style="color:{fit_color};">{fit_score}</span>
-                        <span class="bs-denom">/100</span>
-                    </div>
-                    <div class="bs-sub">{sector_note}</div>
-                    <div class="bar-track" style="margin-top:auto;">
-                        <div class="bar-fill" style="width:{fit_score}%;background:{fit_color};"></div>
-                    </div>
+                <div class="kpi">
+                    <div class="kpi-eye">Investor Fit</div>
+                    <div><span class="kpi-num" style="color:{fit_color};">{fit_score}</span><span class="kpi-denom">/100</span></div>
+                    <div class="kpi-caption">{sector_note}</div>
+                    <div class="kpi-track" style="margin-top:auto;"><div class="kpi-fill" style="width:{fit_score}%;background:{fit_color};"></div></div>
                 </div>
                 """, unsafe_allow_html=True)
 
             with c3:
                 st.markdown(f"""
-                <div class="vc-card">
-                    <div class="vc-card-title">Deal Quality</div>
-                    <div class="big-score">
-                        <span class="bs-num" style="color:{q_color};">{deal_quality:.0f}</span>
-                        <span class="bs-denom">/100</span>
-                    </div>
-                    <div class="bs-sub">{missing_count}/8 key metrics missing · ~{time_to_diligence} days to complete diligence</div>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:{deal_quality}%;background:{q_color};"></div>
-                    </div>
+                <div class="kpi">
+                    <div class="kpi-eye">Deal Quality</div>
+                    <div><span class="kpi-num" style="color:{q_color};">{deal_quality:.0f}</span><span class="kpi-denom">/100</span></div>
+                    <div class="kpi-caption">{missing_count}/8 metrics missing · ~{time_to_diligence}d diligence</div>
+                    <div class="kpi-track" style="margin-top:auto;"><div class="kpi-fill" style="width:{deal_quality}%;background:{q_color};"></div></div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1967,39 +2007,38 @@ elif st.session_state.active_tab == "Analysis":
                 bars_html = ""
                 for cat, score in category_scores.items():
                     pct = score / 10.0 * 100
-                    col = "#10b981" if score >= 7 else "#f59e0b" if score >= 5 else "#ef4444"
-                    lbl = (cat[:9] + ".") if len(cat) > 10 else cat
+                    col = "var(--green)" if score >= 7 else "var(--amber)" if score >= 5 else "var(--red)"
+                    lbl = (cat[:10] + "…") if len(cat) > 11 else cat
                     bars_html += f"""
-                    <div class="score-bar-row">
-                        <span class="sbl">{lbl}</span>
-                        <div class="bar-track"><div class="bar-fill" style="width:{pct}%;background:{col};"></div></div>
-                        <span class="sbv" style="color:{col};">{score:.1f}</span>
+                    <div class="sc-item">
+                        <span class="sc-name">{lbl}</span>
+                        <div class="sc-track"><div class="sc-fill" style="width:{pct}%;background:{col};"></div></div>
+                        <span class="sc-val" style="color:{col};">{score:.1f}</span>
                     </div>"""
 
                 st.markdown(f"""
-                <div class="vc-card">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                        <span class="vc-card-title" style="margin-bottom:0;">Score Breakdown</span>
-                        <span style="font-size:0.7em;color:#3a4a65;">{len(category_scores)} categories</span>
+                <div class="card">
+                    <div class="card-h">
+                        <span class="card-h-title">Score Breakdown</span>
+                        <span class="card-h-right">{len(category_scores)} categories</span>
                     </div>
-                    {bars_html}
+                    <div class="card-b">{bars_html}</div>
                 </div>
                 """, unsafe_allow_html=True)
 
             with why_col:
+                import re as _re
                 pos_html = ""
                 for drv in result.get("drivers_pos_detailed", [])[:2]:
                     impact_str = drv.get('impact', '+5%')
-                    # Extract numeric delta if possible
-                    import re as _re
                     _m = _re.search(r'(\d+)', str(impact_str))
                     delta_num = _m.group(1) if _m else "5"
-                    desc = drv['explanation'][:72] + "…" if len(drv['explanation']) > 72 else drv['explanation']
+                    desc = drv['explanation'][:80] + "…" if len(drv['explanation']) > 80 else drv['explanation']
                     pos_html += f"""
-                    <div class="signal sig-pos">
-                        <div class="sig-icon si-up">↑</div>
-                        <div class="sig-body"><div class="sig-title">{drv['title']}</div><div class="sig-desc">{desc}</div></div>
-                        <span class="sig-delta sd-pos">+{delta_num}%</span>
+                    <div class="drv drv-pos">
+                        <div class="drv-ico">↑</div>
+                        <div class="drv-body"><div class="drv-title">{drv['title']}</div><div class="drv-desc">{desc}</div></div>
+                        <span class="drv-impact c-green">+{delta_num}%</span>
                     </div>"""
 
                 neg_html = ""
@@ -2007,23 +2046,23 @@ elif st.session_state.active_tab == "Analysis":
                     impact_str = drv.get('impact', '-5%')
                     _m2 = _re.search(r'(\d+)', str(impact_str))
                     delta_num2 = _m2.group(1) if _m2 else "4"
-                    desc2 = drv['explanation'][:72] + "…" if len(drv['explanation']) > 72 else drv['explanation']
+                    desc2 = drv['explanation'][:80] + "…" if len(drv['explanation']) > 80 else drv['explanation']
                     neg_html += f"""
-                    <div class="signal sig-neg">
-                        <div class="sig-icon si-dn">↓</div>
-                        <div class="sig-body"><div class="sig-title">{drv['title']}</div><div class="sig-desc">{desc2}</div></div>
-                        <span class="sig-delta sd-neg">-{delta_num2}%</span>
+                    <div class="drv drv-neg">
+                        <div class="drv-ico">↓</div>
+                        <div class="drv-body"><div class="drv-title">{drv['title']}</div><div class="drv-desc">{desc2}</div></div>
+                        <span class="drv-impact c-amber">−{delta_num2}%</span>
                     </div>"""
 
                 st.markdown(f"""
-                <div class="vc-card">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-                        <span class="vc-card-title" style="margin-bottom:0;">Why This Score</span>
+                <div class="card">
+                    <div class="card-h"><span class="card-h-title">Why This Score</span></div>
+                    <div class="card-b">
+                        <div class="drv-group-label">Positive Signals</div>
+                        {pos_html}
+                        <div class="drv-group-label">Risk Factors</div>
+                        {neg_html}
                     </div>
-                    <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#10b981;margin-bottom:6px;">Positive Signals</div>
-                    {pos_html}
-                    <div style="font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#ef4444;margin:10px 0 6px;">Risk Factors</div>
-                    {neg_html}
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -2042,22 +2081,24 @@ elif st.session_state.active_tab == "Analysis":
             _run_color = "#34d399" if runway >= 18 else "#f87171" if runway < 12 else "#fbbf24"
 
             st.markdown(f"""
-            <div class="vc-card">
-                <div class="vc-card-title">Stage Benchmarks vs. {_stage} Median</div>
-                <div class="bench-row">
-                    <span class="bl">ARR</span>
-                    <span class="bv" style="color:{_arr_color};">{arr_display}</span>
-                    <span class="ba">median {_bench['ARR']}</span>
-                </div>
-                <div class="bench-row">
-                    <span class="bl">Growth MoM</span>
-                    <span class="bv" style="color:{_growth_color};">{growth_pct:.0f}%</span>
-                    <span class="ba">median {_bench['Growth']}</span>
-                </div>
-                <div class="bench-row">
-                    <span class="bl">Runway</span>
-                    <span class="bv" style="color:{_run_color};">{runway} mo</span>
-                    <span class="ba">median {_bench['Runway']}</span>
+            <div class="card">
+                <div class="card-h"><span class="card-h-title">Stage Benchmarks vs. {_stage} Median</span></div>
+                <div class="card-b">
+                    <div class="bench-row">
+                        <span class="bl">ARR</span>
+                        <span class="bv" style="color:{_arr_color};">{arr_display}</span>
+                        <span class="ba">median {_bench['ARR']}</span>
+                    </div>
+                    <div class="bench-row">
+                        <span class="bl">Growth MoM</span>
+                        <span class="bv" style="color:{_growth_color};">{growth_pct:.0f}%</span>
+                        <span class="ba">median {_bench['Growth']}</span>
+                    </div>
+                    <div class="bench-row">
+                        <span class="bl">Runway</span>
+                        <span class="bv" style="color:{_run_color};">{runway} mo</span>
+                        <span class="ba">median {_bench['Runway']}</span>
+                    </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -2074,7 +2115,7 @@ elif st.session_state.active_tab == "Analysis":
                 urg_msg = f"✓  Comfortable runway — {runway} months. No immediate pressure; thorough diligence recommended."
 
             st.markdown(f"""
-            <div style="background:{urg_bg};border:1px solid {urg_bd};border-radius:10px;padding:11px 15px;margin-bottom:1rem;font-size:0.84em;font-weight:500;color:{urg_tc};">
+            <div class="urgency-banner" style="background:rgba(255,255,255,0.02);border:1px solid;border-color:{urg_bd};color:{urg_tc};">
                 {urg_msg}
             </div>
             """, unsafe_allow_html=True)
@@ -2173,16 +2214,16 @@ elif st.session_state.active_tab == "Analysis":
             runway_vc = "#10b981" if runway >= 18 else "#f59e0b" if runway >= 12 else "#ef4444"
 
             st.markdown(f"""
-            <div class="vc-card">
-                <div class="vc-card-title">Deal Info</div>
-                <div class="di-row"><span class="di-lbl">Company</span><span class="di-val" style="color:#60a5fa;font-weight:700;">{deal.get('company','—')}</span></div>
-                <div class="di-row"><span class="di-lbl">Stage</span><span class="di-val" style="color:#60a5fa;">{deal.get('stage','—')}</span></div>
-                <div class="di-row"><span class="di-lbl">ARR</span><span class="di-val" style="color:#34d399;">{arr_display}</span></div>
-                <div class="di-row"><span class="di-lbl">Raising</span><span class="di-val">{raise_display}</span></div>
-                <div class="di-row"><span class="di-lbl">Growth MoM</span><span class="di-val" style="color:{growth_vc};">{growth_pct:.0f}%</span></div>
-                <div class="di-row"><span class="di-lbl">Runway</span><span class="di-val" style="color:{runway_vc};">{runway} months</span></div>
-                <div class="di-row"><span class="di-lbl">Sector</span><span class="di-val" style="font-size:0.8em;">{deal.get('sector','—')}</span></div>
-                <div class="di-row"><span class="di-lbl">Updated</span><span class="di-val" style="color:#3a4a65;">{datetime.now().strftime('%b %d · %H:%M')}</span></div>
+            <div class="rp-section">
+                <div class="rp-section-title">Deal Info</div>
+                <div class="rp-row"><span class="rp-row-label">Company</span><span class="rp-row-val c-blue">{deal.get('company','—')}</span></div>
+                <div class="rp-row"><span class="rp-row-label">Stage</span><span class="rp-row-val c-blue">{deal.get('stage','—')}</span></div>
+                <div class="rp-row"><span class="rp-row-label">ARR</span><span class="rp-row-val c-green">{arr_display}</span></div>
+                <div class="rp-row"><span class="rp-row-label">Raising</span><span class="rp-row-val">{raise_display}</span></div>
+                <div class="rp-row"><span class="rp-row-label">Growth MoM</span><span class="rp-row-val" style="color:{growth_vc};">{growth_pct:.0f}%</span></div>
+                <div class="rp-row"><span class="rp-row-label">Runway</span><span class="rp-row-val" style="color:{runway_vc};">{runway} mo</span></div>
+                <div class="rp-row"><span class="rp-row-label">Sector</span><span class="rp-row-val c-t2" style="font-size:10px;">{deal.get('sector','—')}</span></div>
+                <div class="rp-row"><span class="rp-row-label">Updated</span><span class="rp-row-val c-dim">{datetime.now().strftime('%b %d · %H:%M')}</span></div>
             </div>
             """, unsafe_allow_html=True)
 
