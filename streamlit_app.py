@@ -63,17 +63,38 @@ st.markdown("""
     /* === SIDEBAR === */
     [data-testid="stSidebar"]{background:var(--s0)!important;border-right:1px solid var(--b0)!important;}
     [data-testid="stSidebar"]>div{padding:0!important;}
-    [data-testid="stSidebar"] *{color:var(--t1)!important;font-family:var(--font)!important;}
-    section[data-testid="stSidebar"]{width:260px!important;min-width:260px!important;max-width:260px!important;flex-shrink:0!important;}
+    [data-testid="stSidebar"] *{font-family:var(--font)!important;}
+    section[data-testid="stSidebar"]{width:256px!important;min-width:256px!important;max-width:256px!important;flex-shrink:0!important;}
     [data-testid="stSidebarResizeHandle"]{display:none!important;}
-    [data-testid="stSidebarContent"]{width:260px!important;}
-    /* Sidebar internal padding for streamlit elements */
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]{gap:0!important;}
-    [data-testid="stSidebar"] .stButton>button{height:28px!important;font-size:10px!important;padding:0 8px!important;white-space:nowrap!important;overflow:hidden!important;}
-    [data-testid="stSidebar"] [data-testid="column"]{min-width:0!important;overflow:hidden!important;}
-    [data-testid="stSidebar"] .stSelectbox,[data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput{padding:0 8px!important;}
-    [data-testid="stSidebar"] .stDivider{margin:4px 0!important;}
-    [data-testid="stSidebar"] .stInfo{margin:0 8px 8px!important;font-size:11px!important;}
+    [data-testid="stSidebarContent"]{width:256px!important;max-width:256px!important;}
+    /* Compact all buttons inside sidebar — high specificity to override Streamlit defaults */
+    section[data-testid="stSidebar"] button,
+    section[data-testid="stSidebar"] .stButton>button,
+    section[data-testid="stSidebar"] div[data-testid="stHorizontalBlock"] button{
+        height:26px!important;min-height:26px!important;max-height:26px!important;
+        padding:0 8px!important;font-size:10px!important;font-weight:500!important;
+        line-height:1!important;border-radius:6px!important;
+        white-space:nowrap!important;overflow:hidden!important;
+    }
+    /* Compact columns inside sidebar */
+    section[data-testid="stSidebar"] [data-testid="stHorizontalBlock"]{gap:4px!important;}
+    section[data-testid="stSidebar"] [data-testid="column"]{min-width:0!important;overflow:hidden!important;padding:0!important;}
+    /* Compact inputs */
+    section[data-testid="stSidebar"] .stTextInput>div>div>input{font-size:11px!important;height:28px!important;padding:0 8px!important;}
+    section[data-testid="stSidebar"] [data-baseweb="select"]>div{min-height:28px!important;font-size:10px!important;}
+    /* Kill default vertical spacing between sidebar elements */
+    section[data-testid="stSidebar"] [data-testid="stVerticalBlock"]{gap:2px!important;}
+    section[data-testid="stSidebar"] div.block-container{padding:0!important;}
+    section[data-testid="stSidebar"] .stDivider{margin:3px 0!important;}
+    /* Compact captions/text */
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] .stMarkdown p{font-size:11px!important;margin:0!important;color:var(--t2)!important;}
+    /* Compact radio row for list filter */
+    section[data-testid="stSidebar"] .stRadio{padding:0 8px!important;}
+    section[data-testid="stSidebar"] .stRadio label{font-size:10px!important;gap:3px!important;}
+    section[data-testid="stSidebar"] .stRadio [data-testid="stWidgetLabel"]{display:none!important;}
+    /* Deal card margin in sidebar */
+    section[data-testid="stSidebar"] .deal-card{margin:0 6px 2px!important;}
 
     /* === TYPOGRAPHY === */
     h1,h2,h3,h4,h5,h6{font-family:var(--font)!important;color:var(--t1)!important;font-weight:600!important;letter-spacing:-0.02em!important;}
@@ -1417,24 +1438,23 @@ with st.sidebar:
         _uname = st.session_state.current_user
         _initials = _uname[:2].upper()
         st.markdown(f"""
-        <div style="display:flex;align-items:center;gap:9px;padding:10px 14px 10px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 12px 6px;">
+            <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#4c8eff,#7c6af7);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
             <div style="flex:1;min-width:0;overflow:hidden;">
-                <div style="font-size:12px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{_uname}</div>
-                <div style="font-size:10px;color:var(--t3);">Logged in</div>
+                <div style="font-size:11px;font-weight:600;color:#eeeef2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{_uname}</div>
+                <div style="font-size:9px;color:#5a5e7a;">Logged in</div>
             </div>
         </div>
         """, unsafe_allow_html=True)
-        btn_c1, btn_c2 = st.columns(2)
-        with btn_c1:
+        # Compact action buttons row
+        _sb1, _sb2 = st.columns(2)
+        with _sb1:
             if st.button("Sign out", key="logout_btn", use_container_width=True):
-                logout_user()
-                st.rerun()
-        with btn_c2:
+                logout_user(); st.rerun()
+        with _sb2:
             if st.button("Edit profile", key="edit_prefs_top", use_container_width=True):
-                st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard
-                st.rerun()
-        st.markdown('<div style="border-top:1px solid var(--b0);margin:6px 0 0;"></div>', unsafe_allow_html=True)
+                st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard; st.rerun()
+        st.markdown('<div style="border-top:1px solid rgba(255,255,255,0.04);margin:6px 0 0;"></div>', unsafe_allow_html=True)
 
     # Investor Profile section (only shown when logged in)
     if st.session_state.logged_in:
@@ -1561,15 +1581,15 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-        # List selector buttons — 2×2 grid to fit sidebar width
-        _lr1c1, _lr1c2 = st.columns(2)
-        _lr2c1, _lr2c2 = st.columns(2)
-        for _col, _lst, _lbl in [(_lr1c1,"watchlist","📌 Watchlist"),(_lr1c2,"active","⚡ Active"),(_lr2c1,"reviewed","📋 Reviewed"),(_lr2c2,"passed","✕ Passed")]:
-            with _col:
-                if st.button(_lbl, key=f"lst_{_lst}", use_container_width=True,
-                             type="primary" if st.session_state.active_list == _lst else "secondary"):
-                    st.session_state.active_list = _lst
-                    st.rerun()
+        # List selector — compact radio row
+        _list_choice = st.radio(
+            "list_filter", ["Watchlist", "Active", "Reviewed", "Passed"],
+            index=["watchlist","active","reviewed","passed"].index(st.session_state.active_list),
+            horizontal=True, label_visibility="collapsed", key="sidebar_list_radio"
+        )
+        if _list_choice.lower() != st.session_state.active_list:
+            st.session_state.active_list = _list_choice.lower()
+            st.rerun()
 
         # Search
         search_filter = st.text_input(
@@ -1587,7 +1607,7 @@ with st.sidebar:
 
         if filtered_deals:
             for _deal in filtered_deals[:20]:
-                _dc_col = {"Proceed": "var(--green)", "Watch": "var(--amber)", "Pass": "var(--red)"}.get(_deal.get("decision"), "var(--t3)")
+                _dc_col = {"Proceed": "#00c27a", "Watch": "#f5a623", "Pass": "#f0455a"}.get(_deal.get("decision"), "#5a5e7a")
                 _pct_raw = _deal.get('prob_next_round', 0)
                 _pct_str = f"{_pct_raw:.0%}"
                 _pct_w = f"{int(_pct_raw*100)}%"
@@ -1605,25 +1625,11 @@ with st.sidebar:
                 </div>
                 """, unsafe_allow_html=True)
 
-                _da1, _da2 = st.columns([3, 2])
-                with _da1:
-                    if st.button("Open →", key=f"load_{_deal['id']}", use_container_width=True):
-                        load_deal(_deal)
-                        st.session_state.active_tab = "Analysis"
-                        st.toast(f"Loaded {_deal['company']}")
-                        st.rerun()
-                with _da2:
-                    _new_s = st.selectbox(
-                        "Move",
-                        options=["watchlist", "active", "reviewed", "passed"],
-                        index=["watchlist", "active", "reviewed", "passed"].index(_deal.get("status", "watchlist")),
-                        format_func=lambda x: {"watchlist": "📌 Watch", "active": "⚡ Active", "reviewed": "📋 Review", "passed": "✕ Pass"}[x],
-                        key=f"status_{_deal['id']}",
-                        label_visibility="collapsed"
-                    )
-                    if _new_s != _deal.get("status"):
-                        update_deal_status(_deal["id"], _new_s)
-                        st.rerun()
+                if st.button(f"Open {_deal['company']} →", key=f"load_{_deal['id']}", use_container_width=True):
+                    load_deal(_deal)
+                    st.session_state.active_tab = "Analysis"
+                    st.toast(f"Loaded {_deal['company']}")
+                    st.rerun()
         else:
             st.markdown(f'<div style="font-size:11px;color:var(--t4);padding:1rem 14px;text-align:center;">No deals in {st.session_state.active_list.capitalize()}</div>', unsafe_allow_html=True)
 
@@ -2171,6 +2177,73 @@ elif st.session_state.active_tab == "Analysis":
                     if flag.get('risk_level'):
                         st.markdown(f"*Risk Level: {flag['risk_level']}*")
                     st.markdown("---")
+
+            st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0 1rem;"></div>', unsafe_allow_html=True)
+
+            # ── VIBE CHECK / SCORE ADJUSTMENT ────────────────────────────
+            _neg_flags_main = result.get("drivers_neg_detailed", [])
+            if _neg_flags_main:
+                import re as _re3
+                st.markdown(
+                    '<div class="card"><div class="card-h">'
+                    '<span class="card-h-title">Vibe Check — Score Adjustment</span>'
+                    '<span class="card-h-right">Override flags with qualitative context</span>'
+                    '</div><div class="card-b">',
+                    unsafe_allow_html=True
+                )
+                st.markdown(
+                    '<div style="font-size:10px;color:#5a5e7a;margin-bottom:10px;line-height:1.5;">'
+                    'Uncheck any negative flag you can explain with off-model context '
+                    '(e.g. imminent contract, insider round, team background verified). '
+                    'The adjusted probability recalculates instantly.</div>',
+                    unsafe_allow_html=True
+                )
+                _base_prob_main = result.get("prob_next_round", 0)
+                _adj_delta_main = 0.0
+                for _fi2, _flag2 in enumerate(_neg_flags_main):
+                    _ft2 = _flag2.get("title", f"Flag {_fi2}")
+                    _fe2 = _flag2.get("explanation", "")
+                    _fi2_imp = _flag2.get("impact", "")
+                    _fm2 = _re3.search(r'(\d+(?:\.\d+)?)', str(_fi2_imp))
+                    _fn2 = float(_fm2.group(1)) if _fm2 else 2.0
+                    _key2 = f"vibe_flag_{_fi2}"
+                    _is_dis2 = _ft2 in st.session_state.disabled_neg_flags
+                    _chk2 = st.checkbox(
+                        f"**{_ft2}** — _{_fe2[:80]}{'…' if len(_fe2)>80 else ''}_  \n"
+                        f"{'~~' if _is_dis2 else ''}Impact: −{_fn2:.0f}% probability{'~~' if _is_dis2 else ''}",
+                        value=not _is_dis2, key=_key2
+                    )
+                    if _chk2 and _ft2 in st.session_state.disabled_neg_flags:
+                        st.session_state.disabled_neg_flags.discard(_ft2); st.rerun()
+                    elif not _chk2 and _ft2 not in st.session_state.disabled_neg_flags:
+                        st.session_state.disabled_neg_flags.add(_ft2); st.rerun()
+                    if _ft2 in st.session_state.disabled_neg_flags:
+                        _adj_delta_main += _fn2 / 100.0
+
+                st.markdown('</div></div>', unsafe_allow_html=True)
+
+                if st.session_state.disabled_neg_flags:
+                    _adj_p2 = min(0.99, _base_prob_main + _adj_delta_main)
+                    _adj_dec2, _ = get_investment_decision(_adj_p2)
+                    _adj_clr2 = {"Proceed": "#00c27a", "Watch": "#f5a623", "Pass": "#f0455a"}[_adj_dec2]
+                    _base_clr2 = {"Proceed": "#00c27a", "Watch": "#f5a623", "Pass": "#f0455a"}[decision]
+                    st.markdown(
+                        f'<div style="display:flex;align-items:center;gap:16px;background:rgba(76,142,255,0.05);'
+                        f'border:1px solid rgba(76,142,255,0.15);border-radius:10px;padding:12px 16px;margin-top:4px;">'
+                        f'<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5e7a;margin-bottom:2px;">Base Score</div>'
+                        f'<div style="font-size:28px;font-weight:800;font-family:\'Geist Mono\',monospace;color:{_base_clr2};line-height:1">{int(_base_prob_main*100)}%</div>'
+                        f'<div style="font-size:10px;color:{_base_clr2}">{decision}</div></div>'
+                        f'<div style="font-size:18px;color:#2e3248">→</div>'
+                        f'<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#5a5e7a;margin-bottom:2px;">Adjusted Score</div>'
+                        f'<div style="font-size:28px;font-weight:800;font-family:\'Geist Mono\',monospace;color:{_adj_clr2};line-height:1">{int(_adj_p2*100)}%</div>'
+                        f'<div style="font-size:10px;color:{_adj_clr2}">{_adj_dec2}</div></div>'
+                        f'<div style="margin-left:auto;font-size:11px;color:#5a5e7a;">'
+                        f'{len(st.session_state.disabled_neg_flags)} flag{"s" if len(st.session_state.disabled_neg_flags)>1 else ""} overridden</div>'
+                        f'</div>',
+                        unsafe_allow_html=True
+                    )
+                    if st.button("↺ Reset all overrides", key="vibe_reset_main", use_container_width=True):
+                        st.session_state.disabled_neg_flags = set(); st.rerun()
 
             st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0 1rem;"></div>', unsafe_allow_html=True)
 
