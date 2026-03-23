@@ -60,11 +60,13 @@ st.markdown("""
     [data-testid="stSidebar"]{background:var(--s0)!important;border-right:1px solid var(--b0)!important;}
     [data-testid="stSidebar"]>div{padding:0!important;}
     [data-testid="stSidebar"] *{color:var(--t1)!important;font-family:var(--font)!important;}
-    section[data-testid="stSidebar"]{min-width:248px!important;max-width:248px!important;}
+    section[data-testid="stSidebar"]{width:260px!important;min-width:260px!important;max-width:260px!important;flex-shrink:0!important;}
+    [data-testid="stSidebarResizeHandle"]{display:none!important;}
+    [data-testid="stSidebarContent"]{width:260px!important;}
     /* Sidebar internal padding for streamlit elements */
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"]{gap:0!important;}
-    [data-testid="stSidebar"] .stButton>button{height:26px!important;font-size:10px!important;padding:0 8px!important;white-space:nowrap!important;}
-    [data-testid="stSidebar"] [data-testid="column"]{min-width:0!important;}
+    [data-testid="stSidebar"] .stButton>button{height:28px!important;font-size:10px!important;padding:0 8px!important;white-space:nowrap!important;overflow:hidden!important;}
+    [data-testid="stSidebar"] [data-testid="column"]{min-width:0!important;overflow:hidden!important;}
     [data-testid="stSidebar"] .stSelectbox,[data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput{padding:0 8px!important;}
     [data-testid="stSidebar"] .stDivider{margin:4px 0!important;}
     [data-testid="stSidebar"] .stInfo{margin:0 8px 8px!important;font-size:11px!important;}
@@ -75,11 +77,9 @@ st.markdown("""
     label{color:var(--t3)!important;font-size:10px!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:0.06em!important;font-family:var(--font)!important;}
     .stCaption p{color:var(--t4)!important;font-size:10px!important;}
     strong{color:var(--t1)!important;}
-    /* Remove stMarkdown wrapper spacing */
-    .stMarkdown{line-height:1!important;}
-    [data-testid="stVerticalBlock"]>*{margin-bottom:0!important;}
-    /* Better element spacing */
-    [data-testid="stVerticalBlock"]>[data-testid="stVerticalBlock"]{gap:8px!important;}
+    /* Tighter element spacing in main area */
+    .stMarkdown{line-height:1.4!important;}
+    [data-testid="stHorizontalBlock"]{gap:12px!important;}
 
     /* === INPUTS === */
     .stTextInput>div>div>input,.stNumberInput>div>div>input,.stTextArea>div>div>textarea{
@@ -1748,13 +1748,13 @@ if st.session_state.active_tab == "Intake":
                         st.session_state.founder_email = extract_contact_info(st.session_state.docs_text, client)
                     
                     if st.session_state.extracted:
-                        # Auto-apply extracted fields to form
+                        # Auto-apply extracted fields to session state
                         for k in ["company", "stage", "sector", "raise_amount_usd", "arr_usd", "growth_rate_pct", "runway_months", "notes"]:
                             if k in st.session_state.extracted and st.session_state.extracted[k] is not None:
                                 st.session_state[k] = st.session_state.extracted[k]
-                        st.success("✅ Fields extracted and applied!")
                         if st.session_state.founder_email:
-                            st.info(f"📧 Found contact: {st.session_state.founder_email}")
+                            st.toast(f"📧 Contact found: {st.session_state.founder_email}")
+                        st.rerun()
                     else:
                         st.warning("⚠️ Could not extract fields. Review document quality.")
     
@@ -1932,14 +1932,11 @@ elif st.session_state.active_tab == "Analysis":
         arr_display = f"${arr_val/1_000_000:.1f}M" if arr_val >= 1_000_000 else f"${arr_val/1_000:.0f}K" if arr_val >= 1_000 else f"${arr_val}"
         raise_display = f"${raise_val/1_000_000:.1f}M" if raise_val >= 1_000_000 else f"${raise_val/1_000:.0f}K" if raise_val >= 1_000 else f"${raise_val}"
 
-        # Decision colors
-        d_color = {"Proceed": "#10b981", "Watch": "#f59e0b", "Pass": "#ef4444"}[decision]
-        d_badge = {"Proceed": "badge-proceed", "Watch": "badge-watch", "Pass": "badge-pass"}[decision]
-        fit_color = "#10b981" if fit_score >= 70 else "#f59e0b" if fit_score >= 40 else "#ef4444"
-        q_color = "#10b981" if deal_quality >= 70 else "#f59e0b" if deal_quality >= 50 else "#ef4444"
-        g_class = "pv-green" if growth_pct > 10 else "pv-red" if growth_pct <= 0 else "pv-orange"
-        r_class = "pv-green" if runway >= 18 else "pv-orange" if runway >= 12 else "pv-red"
-        stage_class = {"Pre-Seed": "pv-purple", "Seed": "pv-blue", "Series A": "pv-green", "Series B+": "pv-orange"}.get(deal.get("stage", ""), "pv-blue")
+        # Decision colors — use actual hex, not CSS variables (CSS vars don't resolve in Streamlit inline styles)
+        _CLR = {"Proceed": "#00c27a", "Watch": "#f5a623", "Pass": "#f0455a"}
+        d_color = _CLR[decision]
+        fit_color = "#00c27a" if fit_score >= 70 else "#f5a623" if fit_score >= 40 else "#f0455a"
+        q_color  = "#00c27a" if deal_quality >= 70 else "#f5a623" if deal_quality >= 50 else "#f0455a"
 
         # ── CONTEXT STRIP ──────────────────────────────────────────────
         _stage_ctx = "ctx-blue" if deal.get('stage','') in ("Seed","Pre-Seed") else "ctx-vi" if deal.get('stage','') == "Series A" else "ctx-green"
@@ -1975,115 +1972,113 @@ elif st.session_state.active_tab == "Analysis":
             c1, c2, c3 = st.columns(3)
 
             _dec_accent = {"Proceed": "dec-proceed-a", "Watch": "dec-watch-a", "Pass": "dec-pass-a"}[decision]
-            _dec_pip_color = {"Proceed": "var(--green)", "Watch": "var(--amber)", "Pass": "var(--red)"}[decision]
             with c1:
-                st.markdown(f"""
-                <div class="dec-card">
-                    <div class="dec-accent {_dec_accent}"></div>
-                    <div class="dec-body">
-                        <div class="dec-eyebrow">Investment Decision</div>
-                        <div class="dec-verdict">
-                            <span class="dec-pip" style="background:{_dec_pip_color};"></span>
-                            <span class="dec-word" style="color:{d_color};">{decision}</span>
-                        </div>
-                        <div>
-                            <span class="dec-prob-num" style="color:{d_color};">{int(prob*100)}</span><span class="dec-prob-unit">%</span>
-                        </div>
-                        <div class="dec-prob-label">next-round probability</div>
-                        <div class="dec-foot">
-                            <span class="dec-foot-l">Model confidence</span>
-                            <span class="dec-foot-v">{int(confidence*100)}%</span>
-                        </div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="dec-card">'
+                    f'<div class="dec-accent {_dec_accent}"></div>'
+                    f'<div class="dec-body">'
+                    f'<div class="dec-eyebrow">Investment Decision</div>'
+                    f'<div class="dec-verdict">'
+                    f'<span class="dec-pip" style="background:{d_color}"></span>'
+                    f'<span class="dec-word" style="color:{d_color}">{decision}</span>'
+                    f'</div>'
+                    f'<div><span class="dec-prob-num" style="color:{d_color}">{int(prob*100)}</span>'
+                    f'<span class="dec-prob-unit">%</span></div>'
+                    f'<div class="dec-prob-label">next-round probability</div>'
+                    f'<div class="dec-foot">'
+                    f'<span class="dec-foot-l">Model confidence</span>'
+                    f'<span class="dec-foot-v">{int(confidence*100)}%</span>'
+                    f'</div></div></div>',
+                    unsafe_allow_html=True
+                )
 
             with c2:
                 sector_note = "Sector outside thesis" if any("sector" in p.lower() for p in (personalization_applied or [])) else "Sector match"
-                st.markdown(f"""
-                <div class="kpi">
-                    <div class="kpi-eye">Investor Fit</div>
-                    <div><span class="kpi-num" style="color:{fit_color};">{fit_score}</span><span class="kpi-denom">/100</span></div>
-                    <div class="kpi-caption">{sector_note}</div>
-                    <div class="kpi-track" style="margin-top:8px;"><div class="kpi-fill" style="width:{fit_score}%;background:{fit_color};"></div></div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="kpi">'
+                    f'<div class="kpi-eye">Investor Fit</div>'
+                    f'<div><span class="kpi-num" style="color:{fit_color}">{fit_score}</span>'
+                    f'<span class="kpi-denom">/100</span></div>'
+                    f'<div class="kpi-caption">{sector_note}</div>'
+                    f'<div class="kpi-track" style="margin-top:8px">'
+                    f'<div class="kpi-fill" style="width:{fit_score}%;background:{fit_color}"></div></div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
 
             with c3:
-                st.markdown(f"""
-                <div class="kpi">
-                    <div class="kpi-eye">Deal Quality</div>
-                    <div><span class="kpi-num" style="color:{q_color};">{deal_quality:.0f}</span><span class="kpi-denom">/100</span></div>
-                    <div class="kpi-caption">{missing_count}/8 metrics missing · ~{time_to_diligence}d diligence</div>
-                    <div class="kpi-track" style="margin-top:8px;"><div class="kpi-fill" style="width:{deal_quality}%;background:{q_color};"></div></div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="kpi">'
+                    f'<div class="kpi-eye">Deal Quality</div>'
+                    f'<div><span class="kpi-num" style="color:{q_color}">{deal_quality:.0f}</span>'
+                    f'<span class="kpi-denom">/100</span></div>'
+                    f'<div class="kpi-caption">{missing_count}/8 metrics missing · ~{time_to_diligence}d diligence</div>'
+                    f'<div class="kpi-track" style="margin-top:8px">'
+                    f'<div class="kpi-fill" style="width:{deal_quality:.0f}%;background:{q_color}"></div></div>'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
 
             # ── SCORE BREAKDOWN + WHY THIS SCORE ───────────────────────
             sb_col, why_col = st.columns(2)
 
             with sb_col:
+                _COLOR_G = "#00c27a"; _COLOR_A = "#f5a623"; _COLOR_R = "#f0455a"
                 bars_html = ""
                 for cat, score in category_scores.items():
-                    pct = score / 10.0 * 100
-                    col = "var(--green)" if score >= 7 else "var(--amber)" if score >= 5 else "var(--red)"
+                    pct = min(100, score / 10.0 * 100)
+                    clr = _COLOR_G if score >= 7 else _COLOR_A if score >= 5 else _COLOR_R
                     lbl = (cat[:10] + "…") if len(cat) > 11 else cat
-                    bars_html += f"""
-                    <div class="sc-item">
-                        <span class="sc-name">{lbl}</span>
-                        <div class="sc-track"><div class="sc-fill" style="width:{pct}%;background:{col};"></div></div>
-                        <span class="sc-val" style="color:{col};">{score:.1f}</span>
-                    </div>"""
-
-                st.markdown(f"""
-                <div class="card">
-                    <div class="card-h">
-                        <span class="card-h-title">Score Breakdown</span>
-                        <span class="card-h-right">{len(category_scores)} categories</span>
-                    </div>
-                    <div class="card-b">{bars_html}</div>
-                </div>
-                """, unsafe_allow_html=True)
+                    bars_html += (
+                        f'<div class="sc-item">'
+                        f'<span class="sc-name">{lbl}</span>'
+                        f'<div class="sc-track"><div class="sc-fill" style="width:{pct:.0f}%;background:{clr}"></div></div>'
+                        f'<span class="sc-val" style="color:{clr}">{score:.1f}</span>'
+                        f'</div>'
+                    )
+                n_cats = len(category_scores)
+                st.markdown(
+                    f'<div class="card">'
+                    f'<div class="card-h"><span class="card-h-title">Score Breakdown</span>'
+                    f'<span class="card-h-right">{n_cats} categories</span></div>'
+                    f'<div class="card-b">{bars_html}</div></div>',
+                    unsafe_allow_html=True
+                )
 
             with why_col:
                 import re as _re
-                pos_html = ""
-                for drv in result.get("drivers_pos_detailed", [])[:2]:
-                    impact_str = drv.get('impact', '+5%')
-                    _m = _re.search(r'(\d+)', str(impact_str))
-                    delta_num = _m.group(1) if _m else "5"
-                    desc = drv['explanation'][:80] + "…" if len(drv['explanation']) > 80 else drv['explanation']
-                    pos_html += f"""
-                    <div class="drv drv-pos">
-                        <div class="drv-ico">↑</div>
-                        <div class="drv-body"><div class="drv-title">{drv['title']}</div><div class="drv-desc">{desc}</div></div>
-                        <span class="drv-impact c-green">+{delta_num}%</span>
-                    </div>"""
-
-                neg_html = ""
-                for drv in result.get("drivers_neg_detailed", [])[:2]:
-                    impact_str = drv.get('impact', '-5%')
-                    _m2 = _re.search(r'(\d+)', str(impact_str))
-                    delta_num2 = _m2.group(1) if _m2 else "4"
-                    desc2 = drv['explanation'][:80] + "…" if len(drv['explanation']) > 80 else drv['explanation']
-                    neg_html += f"""
-                    <div class="drv drv-neg">
-                        <div class="drv-ico">↓</div>
-                        <div class="drv-body"><div class="drv-title">{drv['title']}</div><div class="drv-desc">{desc2}</div></div>
-                        <span class="drv-impact c-amber">−{delta_num2}%</span>
-                    </div>"""
-
-                st.markdown(f"""
-                <div class="card">
-                    <div class="card-h"><span class="card-h-title">Why This Score</span></div>
-                    <div class="card-b">
-                        <div class="drv-group-label">Positive Signals</div>
-                        {pos_html}
-                        <div class="drv-group-label">Risk Factors</div>
-                        {neg_html}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                def _drv_item(drv, is_pos):
+                    arrow = "↑" if is_pos else "↓"
+                    css = "drv-pos" if is_pos else "drv-neg"
+                    clr = "#00c27a" if is_pos else "#f5a623"
+                    sign = "+" if is_pos else "−"
+                    m = _re.search(r'(\d+)', str(drv.get('impact', '5%')))
+                    delta = m.group(1) if m else "5"
+                    title = drv.get('title', '')[:48]
+                    desc = drv.get('explanation', '')[:90]
+                    if len(drv.get('explanation', '')) > 90:
+                        desc += "…"
+                    return (
+                        f'<div class="drv {css}">'
+                        f'<div class="drv-ico">{arrow}</div>'
+                        f'<div class="drv-body">'
+                        f'<div class="drv-title">{title}</div>'
+                        f'<div class="drv-desc">{desc}</div>'
+                        f'</div>'
+                        f'<span class="drv-impact" style="color:{clr}">{sign}{delta}%</span>'
+                        f'</div>'
+                    )
+                pos_html = "".join(_drv_item(d, True) for d in result.get("drivers_pos_detailed", [])[:2])
+                neg_html = "".join(_drv_item(d, False) for d in result.get("drivers_neg_detailed", [])[:2])
+                st.markdown(
+                    f'<div class="card">'
+                    f'<div class="card-h"><span class="card-h-title">Why This Score</span></div>'
+                    f'<div class="card-b">'
+                    f'<div class="drv-group-label">Positive Signals</div>{pos_html}'
+                    f'<div class="drv-group-label" style="margin-top:10px">Risk Factors</div>{neg_html}'
+                    f'</div></div>',
+                    unsafe_allow_html=True
+                )
 
             # ── NEW: STAGE BENCHMARKS ───────────────────────────────────
             _stage = deal.get('stage', 'Seed')
@@ -2095,32 +2090,27 @@ elif st.session_state.active_tab == "Analysis":
             }.get(_stage, {"ARR": "$500K", "Growth": "20%", "Runway": "18 mo"})
 
             _arr_vs = "above" if arr_val >= 500_000 else "below"
-            _arr_color = "#34d399" if _arr_vs == "above" else "#f87171"
-            _growth_color = "#34d399" if growth_pct >= 20 else "#f87171" if growth_pct < 10 else "#fbbf24"
-            _run_color = "#34d399" if runway >= 18 else "#f87171" if runway < 12 else "#fbbf24"
+            _ac = "#00c27a"; _am = "#f5a623"; _ar = "#f0455a"
+            _arr_color   = _ac if _arr_vs == "above" else _ar
+            _growth_color = _ac if growth_pct >= 20 else _ar if growth_pct < 10 else _am
+            _run_color    = _ac if runway >= 18 else _ar if runway < 12 else _am
 
-            st.markdown(f"""
-            <div class="card">
-                <div class="card-h"><span class="card-h-title">Stage Benchmarks vs. {_stage} Median</span></div>
-                <div class="card-b">
-                    <div class="bench-row">
-                        <span class="bl">ARR</span>
-                        <span class="bv" style="color:{_arr_color};">{arr_display}</span>
-                        <span class="ba">median {_bench['ARR']}</span>
-                    </div>
-                    <div class="bench-row">
-                        <span class="bl">Growth MoM</span>
-                        <span class="bv" style="color:{_growth_color};">{growth_pct:.0f}%</span>
-                        <span class="ba">median {_bench['Growth']}</span>
-                    </div>
-                    <div class="bench-row">
-                        <span class="bl">Runway</span>
-                        <span class="bv" style="color:{_run_color};">{runway} mo</span>
-                        <span class="ba">median {_bench['Runway']}</span>
-                    </div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="card">'
+                f'<div class="card-h"><span class="card-h-title">Stage Benchmarks vs. {_stage} Median</span></div>'
+                f'<div class="card-b">'
+                f'<div class="bench-row"><span class="bl">ARR</span>'
+                f'<span class="bv" style="color:{_arr_color}">{arr_display}</span>'
+                f'<span class="ba">median {_bench["ARR"]}</span></div>'
+                f'<div class="bench-row"><span class="bl">Growth MoM</span>'
+                f'<span class="bv" style="color:{_growth_color}">{growth_pct:.0f}%</span>'
+                f'<span class="ba">median {_bench["Growth"]}</span></div>'
+                f'<div class="bench-row"><span class="bl">Runway</span>'
+                f'<span class="bv" style="color:{_run_color}">{runway} mo</span>'
+                f'<span class="ba">median {_bench["Runway"]}</span></div>'
+                f'</div></div>',
+                unsafe_allow_html=True
+            )
 
             # ── NEW: DEAL MOMENTUM / URGENCY ────────────────────────────
             if runway <= 12:
@@ -2133,11 +2123,10 @@ elif st.session_state.active_tab == "Analysis":
                 urg_bg = "rgba(16,185,129,0.07)"; urg_bd = "rgba(16,185,129,0.18)"; urg_tc = "#34d399"
                 urg_msg = f"✓  Comfortable runway — {runway} months. No immediate pressure; thorough diligence recommended."
 
-            st.markdown(f"""
-            <div class="urgency-banner" style="background:rgba(255,255,255,0.02);border:1px solid;border-color:{urg_bd};color:{urg_tc};">
-                {urg_msg}
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="urgency-banner" style="background:{urg_bg};border:1px solid {urg_bd};color:{urg_tc}">{urg_msg}</div>',
+                unsafe_allow_html=True
+            )
 
             # ── KEY METRICS CHECKLIST ───────────────────────────────────
             with st.expander("📋 Key Metrics Checklist", expanded=False):
