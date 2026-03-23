@@ -61,12 +61,25 @@ st.markdown("""
     [data-testid="stSidebar"]>div{padding:0!important;}
     [data-testid="stSidebar"] *{color:var(--t1)!important;font-family:var(--font)!important;}
     section[data-testid="stSidebar"]{min-width:248px!important;max-width:248px!important;}
+    /* Sidebar internal padding for streamlit elements */
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]{gap:0!important;}
+    [data-testid="stSidebar"] .stButton>button{height:26px!important;font-size:10px!important;padding:0 8px!important;white-space:nowrap!important;}
+    [data-testid="stSidebar"] [data-testid="column"]{min-width:0!important;}
+    [data-testid="stSidebar"] .stSelectbox,[data-testid="stSidebar"] .stTextInput,[data-testid="stSidebar"] .stNumberInput{padding:0 8px!important;}
+    [data-testid="stSidebar"] .stDivider{margin:4px 0!important;}
+    [data-testid="stSidebar"] .stInfo{margin:0 8px 8px!important;font-size:11px!important;}
 
     /* === TYPOGRAPHY === */
     h1,h2,h3,h4,h5,h6{font-family:var(--font)!important;color:var(--t1)!important;font-weight:600!important;letter-spacing:-0.02em!important;}
-    p,.stMarkdown p,.stMarkdown li{color:var(--t2)!important;font-size:13px!important;}
+    p,.stMarkdown p,.stMarkdown li{color:var(--t2)!important;font-size:13px!important;line-height:1.5!important;}
     label{color:var(--t3)!important;font-size:10px!important;font-weight:600!important;text-transform:uppercase!important;letter-spacing:0.06em!important;font-family:var(--font)!important;}
-    .stCaption p{color:var(--t4)!important;}
+    .stCaption p{color:var(--t4)!important;font-size:10px!important;}
+    strong{color:var(--t1)!important;}
+    /* Remove stMarkdown wrapper spacing */
+    .stMarkdown{line-height:1!important;}
+    [data-testid="stVerticalBlock"]>*{margin-bottom:0!important;}
+    /* Better element spacing */
+    [data-testid="stVerticalBlock"]>[data-testid="stVerticalBlock"]{gap:8px!important;}
 
     /* === INPUTS === */
     .stTextInput>div>div>input,.stNumberInput>div>div>input,.stTextArea>div>div>textarea{
@@ -1389,46 +1402,49 @@ with st.sidebar:
             st.markdown('</div>', unsafe_allow_html=True)
 
     else:
-        # User is logged in — show avatar + logout
+        # User is logged in — show avatar + name + action buttons
         _uname = st.session_state.current_user
         _initials = _uname[:2].upper()
-        col_usr, col_out = st.columns([3, 1])
-        with col_usr:
-            st.markdown(f"""
-            <div style="display:flex;align-items:center;gap:9px;padding:10px 14px 8px;">
-                <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
-                <span style="font-size:12px;font-weight:600;color:var(--t1);">{_uname}</span>
+        st.markdown(f"""
+        <div style="display:flex;align-items:center;gap:9px;padding:10px 14px 10px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0;">{_initials}</div>
+            <div style="flex:1;min-width:0;overflow:hidden;">
+                <div style="font-size:12px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{_uname}</div>
+                <div style="font-size:10px;color:var(--t3);">Logged in</div>
             </div>
-            """, unsafe_allow_html=True)
-        with col_out:
-            st.markdown('<div style="padding-top:10px;">', unsafe_allow_html=True)
-            if st.button("Out", key="logout_btn", help="Logout"):
+        </div>
+        """, unsafe_allow_html=True)
+        btn_c1, btn_c2 = st.columns(2)
+        with btn_c1:
+            if st.button("Sign out", key="logout_btn", use_container_width=True):
                 logout_user()
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div style="border-top:1px solid var(--b0);margin:0 0 0;"></div>', unsafe_allow_html=True)
+        with btn_c2:
+            if st.button("Edit profile", key="edit_prefs_top", use_container_width=True):
+                st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard
+                st.rerun()
+        st.markdown('<div style="border-top:1px solid var(--b0);margin:6px 0 0;"></div>', unsafe_allow_html=True)
 
     # Investor Profile section (only shown when logged in)
     if st.session_state.logged_in:
-        col_pref, col_toggle = st.columns([3, 1])
-        with col_pref:
-            st.markdown('<div style="font-size:0.68em;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#3a4a65;">Investor Profile</div>', unsafe_allow_html=True)
-        with col_toggle:
-            if st.button("Edit", help="Edit preferences", key="edit_prefs"):
-                st.session_state.show_prefs_onboard = not st.session_state.show_prefs_onboard
-                st.rerun()
+        st.markdown('<div class="sec-lbl" style="padding:10px 14px 4px;">Investor Profile</div>', unsafe_allow_html=True)
 
     if st.session_state.investor_prefs:
         _ip = st.session_state.investor_prefs
+        _min_arr = _ip.get('min_arr', 0) or 0
+        _arr_fmt = f"${_min_arr/1_000_000:.1f}M" if _min_arr >= 1_000_000 else f"${_min_arr/1_000:.0f}K" if _min_arr >= 1_000 else f"${_min_arr}"
         st.markdown(f"""
-        <div style="background:#131929;border:1px solid #1e2a40;border-radius:10px;padding:10px 13px;margin-bottom:0.75rem;">
-            <div style="font-size:0.82em;color:#e2e8f0;font-weight:600;margin-bottom:4px;">{_ip.get('investor_name','—')}</div>
-            <div style="font-size:0.75em;color:#3a4a65;">{_ip.get('preferred_stage','Any')} · {_ip.get('preferred_sector','Any sector')}</div>
-            <div style="font-size:0.72em;color:#3a4a65;margin-top:2px;">Min ARR ${_ip.get('min_arr',0):,}</div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:var(--r-md);padding:10px 13px;margin:0 8px 10px;">
+            <div style="font-size:12px;color:var(--t1);font-weight:600;margin-bottom:5px;">{_ip.get('investor_name','—')}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px;">
+                <span style="font-size:10px;background:rgba(76,142,255,0.08);border:1px solid rgba(76,142,255,0.16);color:var(--blue);padding:1px 6px;border-radius:4px;">{_ip.get('preferred_stage','Any')}</span>
+                <span style="font-size:10px;background:var(--s2);border:1px solid var(--b1);color:var(--t2);padding:1px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;">{_ip.get('preferred_sector','Any sector')}</span>
+            </div>
+            <div style="font-size:10px;color:var(--t3);">Min ARR {_arr_fmt}</div>
         </div>
         """, unsafe_allow_html=True)
     else:
-        st.info("👉 Set up your investor profile to personalize deal scoring.")
+        st.markdown('<div style="font-size:11px;color:var(--t3);padding:8px 14px 10px;">Set up your investor profile to personalize deal scoring.</div>', unsafe_allow_html=True)
     
     st.divider()
     
@@ -1536,9 +1552,10 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
 
-        # List selector buttons
-        _lc1, _lc2, _lc3, _lc4 = st.columns(4)
-        for _col, _lst, _lbl in [(_lc1,"watchlist","Watch"),(_lc2,"active","Active"),(_lc3,"reviewed","Review"),(_lc4,"passed","Pass")]:
+        # List selector buttons — 2×2 grid to fit sidebar width
+        _lr1c1, _lr1c2 = st.columns(2)
+        _lr2c1, _lr2c2 = st.columns(2)
+        for _col, _lst, _lbl in [(_lr1c1,"watchlist","📌 Watchlist"),(_lr1c2,"active","⚡ Active"),(_lr2c1,"reviewed","📋 Reviewed"),(_lr2c2,"passed","✕ Passed")]:
             with _col:
                 if st.button(_lbl, key=f"lst_{_lst}", use_container_width=True,
                              type="primary" if st.session_state.active_list == _lst else "secondary"):
@@ -1579,19 +1596,19 @@ with st.sidebar:
                 </div>
                 """, unsafe_allow_html=True)
 
-                _oc1, _oc2 = st.columns([3, 2])
-                with _oc1:
+                _da1, _da2 = st.columns([3, 2])
+                with _da1:
                     if st.button("Open →", key=f"load_{_deal['id']}", use_container_width=True):
                         load_deal(_deal)
                         st.session_state.active_tab = "Analysis"
                         st.toast(f"Loaded {_deal['company']}")
                         st.rerun()
-                with _oc2:
+                with _da2:
                     _new_s = st.selectbox(
                         "Move",
                         options=["watchlist", "active", "reviewed", "passed"],
                         index=["watchlist", "active", "reviewed", "passed"].index(_deal.get("status", "watchlist")),
-                        format_func=lambda x: {"watchlist": "📌", "active": "⚡", "reviewed": "📋", "passed": "✕"}[x],
+                        format_func=lambda x: {"watchlist": "📌 Watch", "active": "⚡ Active", "reviewed": "📋 Review", "passed": "✕ Pass"}[x],
                         key=f"status_{_deal['id']}",
                         label_visibility="collapsed"
                     )
@@ -2156,14 +2173,15 @@ elif st.session_state.active_tab == "Analysis":
                         st.markdown(f"*Risk Level: {flag['risk_level']}*")
                     st.markdown("---")
 
-            st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.5rem 0;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0 1rem;"></div>', unsafe_allow_html=True)
 
             # ── GENERATE CONTENT ─────────────────────────────────────────
             st.markdown('<div class="sec-lbl">Generate Content</div>', unsafe_allow_html=True)
-            gc1, gc2, gc3 = st.columns(3)
+            gc1, gc2 = st.columns(2)
+            gc3_full = st.container()
 
             with gc1:
-                if st.button("❓ Diligence Questions", use_container_width=True):
+                if st.button("❓ Diligence Qs", use_container_width=True):
                     client = get_openai_client()
                     if client:
                         with st.spinner("Generating..."):
@@ -2178,8 +2196,8 @@ elif st.session_state.active_tab == "Analysis":
                             st.session_state.founder_followup = generate_founder_followup(deal, result, missing_metrics, client)
                         st.rerun()
 
-            with gc3:
-                if st.button("📝 IC Memo", use_container_width=True):
+            with gc3_full:
+                if st.button("📝 Generate IC Memo", use_container_width=True):
                     client = get_openai_client()
                     if client:
                         with st.spinner("Drafting memo..."):
@@ -2188,23 +2206,23 @@ elif st.session_state.active_tab == "Analysis":
 
             # Display generated content
             if st.session_state.founder_questions:
-                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0;"></div>', unsafe_allow_html=True)
                 st.markdown("**❓ Diligence Questions**")
                 st.write(st.session_state.founder_questions)
 
             if st.session_state.founder_followup:
-                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0;"></div>', unsafe_allow_html=True)
                 st.markdown("**✉️ Follow-up Email**")
                 st.code(st.session_state.founder_followup, language=None)
                 if st.session_state.founder_email:
                     import urllib.parse
                     mailto_link = f"mailto:{st.session_state.founder_email}?subject={urllib.parse.quote('Follow-up: ' + deal.get('company',''))}&body={urllib.parse.quote(st.session_state.founder_followup)}"
-                    st.markdown(f'<a href="{mailto_link}" target="_blank"><button style="padding:8px 16px;background:#2563eb;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.87em;">📧 Open in Email Client</button></a>', unsafe_allow_html=True)
+                    st.markdown(f'<a href="{mailto_link}" target="_blank" style="text-decoration:none;"><button style="padding:7px 14px;background:var(--blue);color:white;border:none;border-radius:var(--r-sm);cursor:pointer;font-weight:600;font-size:11px;font-family:var(--font);">📧 Open in Email Client</button></a>', unsafe_allow_html=True)
                 else:
                     st.caption("No contact email found in deck — add it to Notes for mailto link")
 
             if st.session_state.ic_memo:
-                st.markdown('<div style="border-top:1px solid #1e2a40;margin:1.25rem 0;"></div>', unsafe_allow_html=True)
+                st.markdown('<div style="border-top:1px solid var(--b1);margin:1.25rem 0;"></div>', unsafe_allow_html=True)
                 st.markdown("**📝 Investment Committee Memo**")
                 st.write(st.session_state.ic_memo)
 
@@ -2212,8 +2230,8 @@ elif st.session_state.active_tab == "Analysis":
         with right_col:
 
             # Deal Info card
-            growth_vc = "#10b981" if growth_pct > 10 else "#ef4444" if growth_pct <= 0 else "#f59e0b"
-            runway_vc = "#10b981" if runway >= 18 else "#f59e0b" if runway >= 12 else "#ef4444"
+            growth_vc = "var(--green)" if growth_pct > 10 else "var(--red)" if growth_pct <= 0 else "var(--amber)"
+            runway_vc = "var(--green)" if runway >= 18 else "var(--amber)" if runway >= 12 else "var(--red)"
 
             st.markdown(f"""
             <div class="rp-section">
